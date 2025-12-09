@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load calculator_tags %}
+
+{% block title %}Retirement Calculator - Retirement Planner{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                Retirement Savings Calculator
+            </h1>
+            <p class="text-gray-600 text-lg">
+                Plan your financial future with our easy-to-use calculator
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Column: Form -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    Your Information
+                </h2>
+
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                            <p class="text-red-700">
+                                {{ form.non_field_errors }}
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <p class="mt-1 text-sm text-red-600">
+                                    {{ field.errors.0 }}
+                                </p>
+                            {% endif %}
+                            {% if field.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">
+                                    {{ field.help_text }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105">
+                        Calculate My Retirement
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    Your Results
+                </h2>
+
+                {% if results %}
+                    <div class="space-y-4">
+                        <!-- Years to Retirement -->
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <p class="text-sm text-blue-600 font-semibold mb-1">Years to Retirement</p>
+                            <p class="text-3xl font-bold text-blue-700">
+                                {{ results.years_to_retirement }} {{ results.years_to_retirement|years_plural }}
+                            </p>
+                        </div>
+
+                        <!-- Future Value (using custom currency filter) -->
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <p class="text-sm text-green-600 font-semibold mb-1">Projected Retirement Savings</p>
+                            <p class="text-3xl font-bold text-green-700">
+                                {{ results.future_value|currency }}
+                            </p>
+                            <p class="text-xs text-green-600 mt-1">
+                                {{ results.future_value|currency_short }}
+                            </p>
+                        </div>
+
+                        <!-- Total Contributions -->
+                        <div class="bg-purple-50 rounded-lg p-4">
+                            <p class="text-sm text-purple-600 font-semibold mb-1">Total Contributions</p>
+                            <p class="text-2xl font-bold text-purple-700">
+                                {{ results.total_contributions|currency }}
+                            </p>
+                        </div>
+
+                        <!-- Investment Gains -->
+                        <div class="bg-yellow-50 rounded-lg p-4">
+                            <p class="text-sm text-yellow-600 font-semibold mb-1">Investment Gains</p>
+                            <p class="text-2xl font-bold text-yellow-700">
+                                {{ results.investment_gains|currency }}
+                            </p>
+                            <p class="text-xs text-yellow-600 mt-1">
+                                ROI: {{ results.return_on_investment_percent|percent:1 }}
+                            </p>
+                        </div>
+
+                        <!-- Monthly Income Estimate -->
+                        <div class="bg-indigo-50 rounded-lg p-4">
+                            <p class="text-sm text-indigo-600 font-semibold mb-1">Est. Monthly Income (20 years)</p>
+                            <p class="text-2xl font-bold text-indigo-700">
+                                {{ results.monthly_income_estimate|currency }}
+                            </p>
+                        </div>
+
+                        <!-- Breakdown Chart -->
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">Breakdown</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Your Contributions</span>
+                                    <span class="font-semibold text-gray-800">
+                                        {{ results.total_contributions|currency }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Investment Growth</span>
+                                    <span class="font-semibold text-green-600">
+                                        +{{ results.investment_gains|currency }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Growth Rate</span>
+                                    <span class="font-semibold text-blue-600">
+                                        {% calculate_percentage results.investment_gains results.total_contributions as growth_pct %}
+                                        {{ growth_pct|percent:0 }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+                                    <span class="font-bold text-gray-700">Total at Retirement</span>
+                                    <span class="font-bold text-xl text-green-700">
+                                        {{ results.future_value|currency }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center text-gray-400">
+                            <svg class="mx-auto h-24 w-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                            <p class="text-lg font-medium mb-2">No Results Yet</p>
+                            <p class="text-sm">Fill out the form and click "Calculate" to see your retirement projection</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">How It Works</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Compound Interest</p>
+                    <p>We use compound interest formula to calculate how your money grows over time.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Monthly Contributions</p>
+                    <p>Regular monthly contributions are compounded to show the power of consistent saving.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Realistic Projections</p>
+                    <p>Estimates based on your expected annual return rate, typically 7-10% for stocks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
