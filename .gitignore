@@ -131,6 +131,13 @@ celerybeat.pid
 docs/_build/
 site/
 
+# Verbose documentation (keep local only for reference)
+SUMMARY.md
+DJANGO_HTMX_GUIDE.md
+HTMX_GUIDE.md
+QUICK_REFERENCE.md
+TEMPLATE_GUIDE.md
+
 # ===== LOCAL CONFIGURATION =====
 local_settings.py
 settings_local.py
