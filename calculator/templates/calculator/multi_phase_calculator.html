@@ -31,29 +31,6 @@
         </div>
         {% endif %}
 
-        {# Info Section - Understanding the Phases #}
-        <div class="mb-8 bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Understanding the Four Phases</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 class="font-bold text-blue-900 mb-2">Phase 1: Accumulation</h4>
-                    <p class="text-sm text-gray-700">Build wealth through regular contributions, employer matching, and compound interest during your working years.</p>
-                </div>
-                <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                    <h4 class="font-bold text-purple-900 mb-2">Phase 2: Phased Retirement</h4>
-                    <p class="text-sm text-gray-700">Transition period where you may work part-time while beginning to access retirement savings.</p>
-                </div>
-                <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                    <h4 class="font-bold text-orange-900 mb-2">Phase 3: Active Retirement</h4>
-                    <p class="text-sm text-gray-700">Early retirement years with active lifestyle, travel, and moderate healthcare expenses.</p>
-                </div>
-                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                    <h4 class="font-bold text-indigo-900 mb-2">Phase 4: Late Retirement</h4>
-                    <p class="text-sm text-gray-700">Final years focusing on healthcare, long-term care needs, and legacy planning for beneficiaries.</p>
-                </div>
-            </div>
-        </div>
-
         {# Tab Navigation #}
         <div class="bg-white rounded-t-xl shadow-lg border-b-2 border-gray-200">
             <div class="flex overflow-x-auto">
@@ -118,10 +95,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
-                        <h2 class="text-2xl font-bold text-blue-900 mb-6">Phase 1: Accumulation</h2>
-                        <p class="text-gray-600 mb-6">
-                            Build wealth during your working years with contributions and employer matching.
-                        </p>
+                        <h2 class="text-2xl font-bold text-blue-900 mb-4">Phase 1: Accumulation</h2>
+
+                        {# Collapsible Info Section #}
+                        <details class="mb-6 bg-blue-50 border border-blue-200 rounded-lg">
+                            <summary class="cursor-pointer px-4 py-3 text-blue-900 font-semibold hover:bg-blue-100 rounded-lg transition-colors flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                About This Phase
+                            </summary>
+                            <div class="px-4 pb-4 pt-2 text-gray-700">
+                                <p>Build wealth through regular contributions, employer matching, and compound interest during your working years. This is the foundation of your retirement plan where consistent saving and investment growth set you up for financial security.</p>
+                            </div>
+                        </details>
 
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_accumulation' %}"
@@ -175,10 +162,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
-                        <h2 class="text-2xl font-bold text-purple-900 mb-6">Phase 2: Phased Retirement</h2>
-                        <p class="text-gray-600 mb-6">
-                            Semi-retired years with optional part-time work and flexible income.
-                        </p>
+                        <h2 class="text-2xl font-bold text-purple-900 mb-4">Phase 2: Phased Retirement</h2>
+
+                        {# Collapsible Info Section #}
+                        <details class="mb-6 bg-purple-50 border border-purple-200 rounded-lg">
+                            <summary class="cursor-pointer px-4 py-3 text-purple-900 font-semibold hover:bg-purple-100 rounded-lg transition-colors flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                About This Phase (Optional)
+                            </summary>
+                            <div class="px-4 pb-4 pt-2 text-gray-700">
+                                <p>This is an <strong>optional</strong> transition period where you may work part-time while beginning to access retirement savings. This phase allows for a gradual shift from full-time work to complete retirement, providing both income and flexibility as you adjust to your new lifestyle.</p>
+                            </div>
+                        </details>
 
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_phased_retirement' %}"
@@ -249,10 +246,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
-                        <h2 class="text-2xl font-bold text-orange-900 mb-6">Phase 3: Active Retirement</h2>
-                        <p class="text-gray-600 mb-6">
-                            Early retirement years with active lifestyle and moderate healthcare costs.
-                        </p>
+                        <h2 class="text-2xl font-bold text-orange-900 mb-4">Phase 3: Active Retirement</h2>
+
+                        {# Collapsible Info Section #}
+                        <details class="mb-6 bg-orange-50 border border-orange-200 rounded-lg">
+                            <summary class="cursor-pointer px-4 py-3 text-orange-900 font-semibold hover:bg-orange-100 rounded-lg transition-colors flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                About This Phase
+                            </summary>
+                            <div class="px-4 pb-4 pt-2 text-gray-700">
+                                <p>Your early retirement years with an active lifestyle, travel opportunities, and moderate healthcare expenses. You're living on your retirement savings, Social Security, and any pension income while maintaining an engaged and fulfilling lifestyle.</p>
+                            </div>
+                        </details>
 
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_active_retirement' %}"
@@ -323,10 +330,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
-                        <h2 class="text-2xl font-bold text-indigo-900 mb-6">Phase 4: Late Retirement & Legacy</h2>
-                        <p class="text-gray-600 mb-6">
-                            Final years with high healthcare costs, long-term care planning, and legacy goals.
-                        </p>
+                        <h2 class="text-2xl font-bold text-indigo-900 mb-4">Phase 4: Late Retirement & Legacy</h2>
+
+                        {# Collapsible Info Section #}
+                        <details class="mb-6 bg-indigo-50 border border-indigo-200 rounded-lg">
+                            <summary class="cursor-pointer px-4 py-3 text-indigo-900 font-semibold hover:bg-indigo-100 rounded-lg transition-colors flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                About This Phase
+                            </summary>
+                            <div class="px-4 pb-4 pt-2 text-gray-700">
+                                <p>Your final retirement years focusing on healthcare needs, potential long-term care expenses, and legacy planning for beneficiaries. This phase accounts for increased medical costs, insurance coverage, and ensuring you can leave something for your loved ones.</p>
+                            </div>
+                        </details>
 
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_late_retirement' %}"
@@ -439,6 +456,33 @@
 
 .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
+}
+
+/* Collapsible details styling */
+details summary {
+    list-style: none;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 0.5rem;
+    transition: transform 0.2s ease;
+    font-size: 0.75rem;
+}
+
+details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+details[open] summary {
+    border-bottom: 1px solid currentColor;
+    border-bottom-opacity: 0.2;
+    margin-bottom: 0.5rem;
 }
 
 /* HTMX swap animations */
