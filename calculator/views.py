@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .forms import RetirementCalculatorForm
 from .calculator import calculate_retirement_savings
 from .phase_forms import (
@@ -7,6 +9,7 @@ from .phase_forms import (
     ActiveRetirementForm,
     LateRetirementForm
 )
+from .models import Scenario
 
 
 def retirement_calculator(request):
@@ -56,3 +59,34 @@ def multi_phase_calculator(request):
         'active_retirement_form': active_retirement_form,
         'late_retirement_form': late_retirement_form,
     })
+
+
+# CRUD Views for Scenario model
+class ScenarioListView(ListView):
+    """Display list of all saved scenarios."""
+    model = Scenario
+    template_name = 'calculator/scenario_list.html'
+    context_object_name = 'scenarios'
+
+
+class ScenarioCreateView(CreateView):
+    """Create a new scenario."""
+    model = Scenario
+    fields = ['name', 'data']
+    template_name = 'calculator/scenario_form.html'
+    success_url = reverse_lazy('calculator:scenario_list')
+
+
+class ScenarioUpdateView(UpdateView):
+    """Update an existing scenario."""
+    model = Scenario
+    fields = ['name', 'data']
+    template_name = 'calculator/scenario_form.html'
+    success_url = reverse_lazy('calculator:scenario_list')
+
+
+class ScenarioDeleteView(DeleteView):
+    """Delete a scenario."""
+    model = Scenario
+    template_name = 'calculator/scenario_confirm_delete.html'
+    success_url = reverse_lazy('calculator:scenario_list')

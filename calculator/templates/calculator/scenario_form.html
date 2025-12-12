@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit{% else %}New{% endif %} Scenario - Retirement Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            {% if object %}Edit Scenario{% else %}New Scenario{% endif %}
+        </h1>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Scenario Name
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.data.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Scenario Data (JSON)
+                </label>
+                {{ form.data }}
+                {% if form.data.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.data.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-sm text-gray-500">Enter scenario data as JSON object</p>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'calculator:scenario_list' %}"
+                   class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    {% if object %}Update{% else %}Create{% endif %} Scenario
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    #id_name {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+    }
+    #id_data {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-family: monospace;
+        min-height: 200px;
+    }
+</style>
+{% endblock %}
