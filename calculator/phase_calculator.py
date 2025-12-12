@@ -75,8 +75,8 @@ def calculate_accumulation_phase(data: dict) -> AccumulationResults:
     - Regular contributions with optional employer match
     - Optional salary increases affecting contribution amounts
     """
-    current_age = data['current_age']
-    retirement_start_age = data['retirement_start_age']
+    current_age = int(data['current_age'])
+    retirement_start_age = int(data['retirement_start_age'])
     current_savings = Decimal(str(data['current_savings']))
     monthly_contribution = Decimal(str(data['monthly_contribution']))
     employer_match_rate = Decimal(str(data.get('employer_match_rate') or 0))

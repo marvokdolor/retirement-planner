@@ -118,3 +118,67 @@ class ScenarioDeleteView(DeleteView):
     model = Scenario
     template_name = 'calculator/scenario_confirm_delete.html'
     success_url = reverse_lazy('calculator:scenario_list')
+
+
+# =============================================================================
+# SCENARIO COMPARISON
+# =============================================================================
+# Compare two scenarios side-by-side and highlight better performer.
+
+def compare_scenarios(request):
+    """
+    Compare two scenarios side-by-side.
+    GET: Display dropdown form to select scenarios
+    POST: Calculate and display comparison results
+    """
+    from .phase_calculator import calculate_accumulation_phase
+    from decimal import Decimal
+
+    scenarios = Scenario.objects.all()
+    comparison_data = None
+    error_message = None
+    better_scenario = None
+
+    if request.method == 'POST':
+        scenario1_id = request.POST.get('scenario1')
+        scenario2_id = request.POST.get('scenario2')
+
+        # Validate selection
+        if scenario1_id == scenario2_id:
+            error_message = "Please select two different scenarios to compare."
+        elif scenario1_id and scenario2_id:
+            scenario1 = get_object_or_404(Scenario, pk=scenario1_id)
+            scenario2 = get_object_or_404(Scenario, pk=scenario2_id)
+
+            # Calculate results for both scenarios
+            try:
+                result1 = calculate_accumulation_phase(scenario1.data)
+                result2 = calculate_accumulation_phase(scenario2.data)
+
+                # Determine which scenario performs better (higher future value)
+                if result1.future_value > result2.future_value:
+                    better_scenario = 1
+                elif result2.future_value > result1.future_value:
+                    better_scenario = 2
+                else:
+                    better_scenario = 'tie'
+
+                comparison_data = {
+                    'scenario1': {
+                        'name': scenario1.name,
+                        'result': result1,
+                    },
+                    'scenario2': {
+                        'name': scenario2.name,
+                        'result': result2,
+                    }
+                }
+            except (KeyError, ValueError) as e:
+                error_message = f"Error calculating scenarios: {str(e)}"
+
+    return render(request, 'calculator/scenario_compare.html', {
+        'scenarios': scenarios,
+        'comparison': comparison_data,
+        'error_message': error_message,
+        'better_scenario': better_scenario,
+    })

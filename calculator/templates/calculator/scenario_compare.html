@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Scenarios - Retirement Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Compare Scenarios</h1>
+
+    <!-- Selection Form -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% if error_message %}
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <p class="text-red-700">{{ error_message }}</p>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Scenario 1 Dropdown -->
+                <div>
+                    <label for="scenario1" class="block text-sm font-medium text-gray-700 mb-2">
+                        Scenario 1
+                    </label>
+                    <select name="scenario1" id="scenario1"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Select Scenario 1 --</option>
+                        {% for scenario in scenarios %}
+                        <option value="{{ scenario.pk }}">{{ scenario.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Scenario 2 Dropdown -->
+                <div>
+                    <label for="scenario2" class="block text-sm font-medium text-gray-700 mb-2">
+                        Scenario 2
+                    </label>
+                    <select name="scenario2" id="scenario2"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Select Scenario 2 --</option>
+                        {% for scenario in scenarios %}
+                        <option value="{{ scenario.pk }}">{{ scenario.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit"
+                        class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+                    Compare Scenarios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Comparison Results -->
+    {% if comparison %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Scenario 1 Results -->
+        <div class="bg-white shadow-md rounded-lg p-6 {% if better_scenario == 1 %}ring-4 ring-green-500{% endif %}">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-900">{{ comparison.scenario1.name }}</h2>
+                {% if better_scenario == 1 %}
+                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Better Performer
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="space-y-4">
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Final Balance</p>
+                    <p class="text-2xl font-bold text-gray-900">
+                        ${{ comparison.scenario1.result.future_value|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Total Personal Contributions</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario1.result.total_personal_contributions|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Total Employer Match</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario1.result.total_employer_match|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-600">Investment Growth</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario1.result.investment_growth|floatformat:2 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 2 Results -->
+        <div class="bg-white shadow-md rounded-lg p-6 {% if better_scenario == 2 %}ring-4 ring-green-500{% endif %}">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-900">{{ comparison.scenario2.name }}</h2>
+                {% if better_scenario == 2 %}
+                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Better Performer
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="space-y-4">
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Final Balance</p>
+                    <p class="text-2xl font-bold text-gray-900">
+                        ${{ comparison.scenario2.result.future_value|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Total Personal Contributions</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario2.result.total_personal_contributions|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="border-b pb-3">
+                    <p class="text-sm text-gray-600">Total Employer Match</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario2.result.total_employer_match|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-600">Investment Growth</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        ${{ comparison.scenario2.result.investment_growth|floatformat:2 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if better_scenario == 'tie' %}
+    <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 p-4">
+        <p class="text-blue-700 font-medium">Both scenarios result in the same final balance!</p>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Back Link -->
+    <div class="mt-8">
+        <a href="{% url 'calculator:scenario_list' %}"
+           class="text-blue-600 hover:text-blue-800 font-medium">
+            &larr; Back to Scenarios
+        </a>
+    </div>
+</div>
+{% endblock %}

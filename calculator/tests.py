@@ -1,9 +1,12 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.admin.sites import AdminSite
+from django.contrib.auth.models import User
 from decimal import Decimal
 from .models import Scenario
 from .calculator import calculate_retirement_savings
 from .phase_calculator import calculate_accumulation_phase
+from .admin import ScenarioAdmin
 
 
 class ScenarioModelTests(TestCase):
@@ -210,3 +213,148 @@ class SaveScenarioTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'name')
+
+
+class ScenarioAdminTests(TestCase):
+    """Test Django admin customizations for Scenario model."""
+
+    def setUp(self):
+        """Set up admin site and test user."""
+        self.site = AdminSite()
+        self.admin = ScenarioAdmin(Scenario, self.site)
+        self.user = User.objects.create_superuser(
+            username='testadmin',
+            email='admin@test.com',
+            password='testpass123'
+        )
+        self.client.login(username='testadmin', password='testpass123')
+
+    def test_admin_list_display_fields(self):
+        """Test that admin list view shows correct fields."""
+        self.assertIn('name', self.admin.list_display)
+        self.assertIn('created_at', self.admin.list_display)
+        self.assertIn('updated_at', self.admin.list_display)
+
+    def test_admin_search_fields(self):
+        """Test that search is configured."""
+        self.assertIn('name', self.admin.search_fields)
+
+    def test_admin_has_list_filters(self):
+        """Test that list filters are configured for date filtering."""
+        self.assertIn('created_at', self.admin.list_filter)
+        self.assertIn('updated_at', self.admin.list_filter)
+
+    def test_duplicate_scenario_action_exists(self):
+        """Test that duplicate action is registered."""
+        actions = [action for action in self.admin.actions]
+        self.assertIn('duplicate_scenarios', actions)
+
+    def test_duplicate_scenario_action_functionality(self):
+        """Test custom admin action to duplicate a scenario."""
+        scenario = Scenario.objects.create(
+            name="Original Plan",
+            data={"savings": "50000", "age": 30}
+        )
+
+        # Simulate admin action with proper request mock
+        from django.test import RequestFactory
+        from django.contrib.messages.storage.fallback import FallbackStorage
+
+        factory = RequestFactory()
+        request = factory.post('/admin/calculator/scenario/')
+        request.user = self.user
+
+        # Add messages middleware support
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        queryset = Scenario.objects.filter(pk=scenario.pk)
+        self.admin.duplicate_scenarios(request, queryset)
+
+        # Check that duplicate was created
+        self.assertEqual(Scenario.objects.count(), 2)
+        duplicate = Scenario.objects.filter(name__startswith="Copy of Original Plan").first()
+        self.assertIsNotNone(duplicate)
+        self.assertEqual(duplicate.data, scenario.data)
+
+    def test_admin_readonly_fields(self):
+        """Test that timestamp fields are readonly."""
+        self.assertIn('created_at', self.admin.readonly_fields)
+        self.assertIn('updated_at', self.admin.readonly_fields)
+
+
+class ScenarioComparisonTests(TestCase):
+    """Test scenario comparison view."""
+
+    def setUp(self):
+        """Create test scenarios for comparison."""
+        self.client = Client()
+        self.scenario1 = Scenario.objects.create(
+            name="Conservative Plan",
+            data={
+                "current_age": "30",
+                "retirement_start_age": "65",
+                "current_savings": "50000",
+                "monthly_contribution": "500",
+                "expected_return": "5"
+            }
+        )
+        self.scenario2 = Scenario.objects.create(
+            name="Aggressive Plan",
+            data={
+                "current_age": "30",
+                "retirement_start_age": "65",
+                "current_savings": "50000",
+                "monthly_contribution": "1000",
+                "expected_return": "8"
+            }
+        )
+
+    def test_comparison_view_get(self):
+        """Test GET request shows comparison form with dropdowns."""
+        response = self.client.get(reverse('calculator:scenario_compare'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'calculator/scenario_compare.html')
+        self.assertContains(response, 'Conservative Plan')
+        self.assertContains(response, 'Aggressive Plan')
+
+    def test_comparison_view_post_valid(self):
+        """Test POST with two scenarios shows comparison results."""
+        response = self.client.post(
+            reverse('calculator:scenario_compare'),
+            {
+                'scenario1': self.scenario1.pk,
+                'scenario2': self.scenario2.pk
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Conservative Plan')
+        self.assertContains(response, 'Aggressive Plan')
+        # Should show comparison data (final balance, etc.)
+        self.assertContains(response, 'Final Balance')
+
+    def test_comparison_view_post_same_scenario(self):
+        """Test selecting same scenario twice shows error."""
+        response = self.client.post(
+            reverse('calculator:scenario_compare'),
+            {
+                'scenario1': self.scenario1.pk,
+                'scenario2': self.scenario1.pk
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'different scenarios')
+
+    def test_comparison_highlights_better_performer(self):
+        """Test that comparison highlights which scenario performs better."""
+        response = self.client.post(
+            reverse('calculator:scenario_compare'),
+            {
+                'scenario1': self.scenario1.pk,
+                'scenario2': self.scenario2.pk
+            }
+        )
+        # Should have some indicator of which is better
+        # (We'll implement this with a 'better_scenario' context variable)
+        self.assertIn('better_scenario', response.context)
