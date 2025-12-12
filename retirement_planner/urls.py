@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from . import views
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', RedirectView.as_view(pattern_name='calculator:multi_phase_calculator', permanent=False)),
     path('calculator/', include('calculator.urls')),
     path('admin/', admin.site.urls),
     path('__reload__/', include('django_browser_reload.urls')),
