@@ -152,6 +152,16 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 **Never commit `.env` to version control!**
 
+## Future Features
+
+- [ ] Long-term care (LTC) cost analysis and planning
+- [ ] Export scenarios to PDF/Excel
+- [ ] Interactive charts and portfolio visualizations
+- [ ] Email/share scenario results
+- [ ] What-if scenario modeling with adjustable variables
+- [ ] Retirement readiness score/dashboard
+- [ ] Tax optimization strategies
+
 ## Contributing
 
 1. Fork the repository

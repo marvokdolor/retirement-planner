@@ -18,7 +18,7 @@
             <div>
                 <div class="font-bold text-yellow-800 mb-1">⚠️ Legacy Goal Not Met</div>
                 <div class="text-sm text-yellow-700">
-                    Your portfolio may not meet your desired legacy goal. Consider adjusting expenses or long-term care planning.
+                    Your portfolio may not meet your desired legacy goal. Consider adjusting expenses.
                 </div>
             </div>
         </div>
@@ -125,9 +125,11 @@
             <div class="flex justify-between text-xs">
                 <span class="ml-4 text-gray-500">• Basic expenses & healthcare</span>
             </div>
+            {% comment %}
             <div class="flex justify-between text-xs">
                 <span class="ml-4 text-gray-500">• LTC out-of-pocket: {{ results.net_ltc_out_of_pocket|currency }}</span>
             </div>
+            {% endcomment %}
             <div class="flex justify-between text-xs text-gray-500 italic">
                 <span>(Social Security received separately)</span>
             </div>
@@ -140,7 +142,8 @@
         </div>
     </div>
 
-    {# LTC coverage analysis #}
+    {# LTC coverage analysis - COMMENTED OUT FOR FUTURE FUNCTIONALITY #}
+    {% comment %}
     <div class="mt-4 bg-indigo-50 border border-indigo-200 rounded-lg p-4">
         <p class="text-sm text-indigo-800">
             <strong>Long-Term Care:</strong> Your LTC insurance covered {{ results.total_ltc_insurance_paid|currency }} of {{ results.total_ltc_costs|currency }} in care costs
@@ -152,4 +155,5 @@
             {% endif %}
         </p>
     </div>
+    {% endcomment %}
 </div>
