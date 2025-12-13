@@ -150,6 +150,10 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'calculator:multi_phase_calculator'
 LOGOUT_REDIRECT_URL = 'calculator:multi_phase_calculator'
 
+# Email Settings (Console backend for development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@retirementplanner.com'
+
 # Security Settings
 # These are good practices even for development
 

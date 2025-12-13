@@ -377,3 +377,71 @@ class ScenarioComparisonTests(TestCase):
         # Should have some indicator of which is better
         # (We'll implement this with a 'better_scenario' context variable)
         self.assertIn('better_scenario', response.context)
+
+
+class EmailScenarioTests(TestCase):
+    """Test emailing scenario reports."""
+
+    def setUp(self):
+        """Set up test user and scenario."""
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.client.login(username='testuser', password='testpass123')
+        self.scenario = Scenario.objects.create(
+            user=self.user,
+            name="Test Retirement Plan",
+            data={
+                "current_age": "30",
+                "retirement_start_age": "65",
+                "current_savings": "50000",
+                "monthly_contribution": "1000",
+                "expected_return": "7"
+            }
+        )
+
+    def test_email_scenario_report(self):
+        """Test sending scenario report via email."""
+        from django.core import mail
+
+        response = self.client.post(
+            reverse('calculator:email_scenario', kwargs={'scenario_id': self.scenario.pk})
+        )
+
+        # Should return success message
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'email sent')
+
+        # Should send one email
+        self.assertEqual(len(mail.outbox), 1)
+
+        # Email should be sent to user's email
+        self.assertEqual(mail.outbox[0].to, ['test@example.com'])
+
+        # Email should contain scenario name
+        self.assertIn('Test Retirement Plan', mail.outbox[0].body)
+
+    def test_email_scenario_requires_ownership(self):
+        """Test that users can only email their own scenarios."""
+        # Create another user and their scenario
+        other_user = User.objects.create_user(
+            username='otheruser',
+            email='other@example.com',
+            password='testpass123'
+        )
+        other_scenario = Scenario.objects.create(
+            user=other_user,
+            name="Other's Plan",
+            data={"current_age": "25"}
+        )
+
+        # Try to email other user's scenario
+        response = self.client.post(
+            reverse('calculator:email_scenario', kwargs={'scenario_id': other_scenario.pk})
+        )
+
+        # Should return 404 (not found, because of user filtering)
+        self.assertEqual(response.status_code, 404)

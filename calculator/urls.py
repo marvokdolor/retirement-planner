@@ -30,4 +30,7 @@ urlpatterns = [
 
     # Scenario comparison
     path('scenarios/compare/', views.compare_scenarios, name='scenario_compare'),
+
+    # Email scenario report
+    path('scenarios/<int:scenario_id>/email/', views.email_scenario, name='email_scenario'),
 ]
