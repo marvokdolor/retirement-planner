@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from calculator.views import register
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='calculator:multi_phase_calculator', permanent=False)),
     path('calculator/', include('calculator.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Built-in auth URLs
+    path('accounts/register/', register, name='register'),  # Custom registration
     path('admin/', admin.site.urls),
     path('__reload__/', include('django_browser_reload.urls')),
 ]

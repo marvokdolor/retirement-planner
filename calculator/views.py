@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from .forms import RetirementCalculatorForm
 from .calculator import calculate_retirement_savings
 from .phase_forms import (
@@ -182,3 +184,23 @@ def compare_scenarios(request):
         'error_message': error_message,
         'better_scenario': better_scenario,
     })
+
+
+# =============================================================================
+# AUTHENTICATION
+# =============================================================================
+
+def register(request):
+    """
+    User registration view.
+    """
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Auto-login after registration
+            return redirect('calculator:multi_phase_calculator')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/register.html', {'form': form})

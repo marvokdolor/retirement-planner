@@ -34,6 +34,22 @@
                     <a href="{% url 'calculator:scenario_compare' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
                         Compare Scenarios
                     </a>
+
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-600 px-3 py-2 text-sm">
+                            {{ user.username }}
+                        </span>
+                        <a href="{% url 'logout' %}" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            Login
+                        </a>
+                        <a href="{% url 'register' %}" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium">
+                            Register
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
