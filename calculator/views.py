@@ -60,7 +60,6 @@ def retirement_calculator(request):
 # Uses phase_calculator.py for calculations.
 # Supports scenario loading and saving.
 
-@login_required
 def multi_phase_calculator(request, scenario_id=None):
     """
     Multi-phase retirement calculator with tabbed interface.
@@ -71,9 +70,10 @@ def multi_phase_calculator(request, scenario_id=None):
     initial_data = {}
     scenario = None
     if scenario_id:
-        # Ensure user can only load their own scenarios
-        scenario = get_object_or_404(Scenario, pk=scenario_id, user=request.user)
-        initial_data = scenario.data
+        # Only authenticated users can load scenarios
+        if request.user.is_authenticated:
+            scenario = get_object_or_404(Scenario, pk=scenario_id, user=request.user)
+            initial_data = scenario.data
 
     # Initialize all forms (with scenario data if provided)
     accumulation_form = AccumulationPhaseForm(initial=initial_data)
@@ -148,7 +148,6 @@ class ScenarioDeleteView(LoginRequiredMixin, DeleteView):
 # =============================================================================
 # Compare two scenarios side-by-side and highlight better performer.
 
-@login_required
 def compare_scenarios(request):
     """
     Compare two scenarios side-by-side.
@@ -158,7 +157,8 @@ def compare_scenarios(request):
     from .phase_calculator import calculate_accumulation_phase
     from decimal import Decimal
 
-    scenarios = Scenario.objects.filter(user=request.user)
+    # Only show scenarios if user is authenticated
+    scenarios = Scenario.objects.filter(user=request.user) if request.user.is_authenticated else Scenario.objects.none()
     comparison_data = None
     error_message = None
     better_scenario = None

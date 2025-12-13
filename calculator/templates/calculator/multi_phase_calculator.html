@@ -419,30 +419,47 @@
         {# Save Scenario Section - After filling out the forms #}
         <div class="max-w-4xl mx-auto mt-8">
             <div id="save-message"></div>
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">💾 Save This Scenario</h2>
-                <p class="text-gray-600 mb-6">
-                    Save your retirement plan to review or modify later. All your inputs across all phases will be saved.
-                </p>
-                <form id="save-scenario-form"
-                      hx-post="{% url 'calculator:save_scenario' %}"
-                      hx-target="#save-message"
-                      hx-swap="innerHTML"
-                      class="flex items-center gap-4">
-                    {% csrf_token %}
-                    <div class="flex-1">
-                        <input type="text"
-                               name="name"
-                               placeholder="Enter scenario name (e.g., Conservative Retirement Plan)"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
-                               required>
+            {% if user.is_authenticated %}
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">💾 Save This Scenario</h2>
+                    <p class="text-gray-600 mb-6">
+                        Save your retirement plan to review or modify later. All your inputs across all phases will be saved.
+                    </p>
+                    <form id="save-scenario-form"
+                          hx-post="{% url 'calculator:save_scenario' %}"
+                          hx-target="#save-message"
+                          hx-swap="innerHTML"
+                          class="flex items-center gap-4">
+                        {% csrf_token %}
+                        <div class="flex-1">
+                            <input type="text"
+                                   name="name"
+                                   placeholder="Enter scenario name (e.g., Conservative Retirement Plan)"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                                   required>
+                        </div>
+                        <button type="submit"
+                                class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap">
+                            Save Scenario
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="bg-blue-50 border border-blue-200 rounded-lg shadow-lg p-8 text-center">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">💾 Save This Scenario</h2>
+                    <p class="text-gray-600 mb-6">
+                        Want to save your retirement plan? Create a free account to save and compare multiple scenarios.
+                    </p>
+                    <div class="flex gap-4 justify-center">
+                        <a href="{% url 'register' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                            Create Account
+                        </a>
+                        <a href="{% url 'login' %}" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">
+                            Login
+                        </a>
                     </div>
-                    <button type="submit"
-                            class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap">
-                        Save Scenario
-                    </button>
-                </form>
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

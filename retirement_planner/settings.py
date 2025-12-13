@@ -148,7 +148,7 @@ INTERNAL_IPS = [
 # Authentication Settings
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'calculator:multi_phase_calculator'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'calculator:multi_phase_calculator'
 
 # Security Settings
 # These are good practices even for development
