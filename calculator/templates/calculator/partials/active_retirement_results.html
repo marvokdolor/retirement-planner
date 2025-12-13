@@ -50,7 +50,8 @@
         </div>
     </div>
 
-    {# Income sources #}
+    {# Income sources - COMMENTED OUT FOR FUTURE FUNCTIONALITY #}
+    {% comment %}
     <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 mb-6 border border-blue-200">
         <div class="text-sm font-semibold text-blue-900 mb-3">Total Income Sources</div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -68,6 +69,7 @@
             </div>
         </div>
     </div>
+    {% endcomment %}
 
     {# Withdrawals and investment performance #}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -104,9 +106,11 @@
                 <span>Portfolio Withdrawals:</span>
                 <span class="font-medium text-orange-600">- {{ results.total_withdrawals|currency }}</span>
             </div>
+            {% comment %}
             <div class="flex justify-between text-xs text-gray-500 italic">
                 <span>(Social Security & Pension received separately)</span>
             </div>
+            {% endcomment %}
             <div class="flex justify-between pt-2 border-t border-gray-300 text-base font-bold">
                 <span>Ending Portfolio:</span>
                 <span class="{% if results.ending_portfolio > 0 %}text-green-600{% else %}text-red-600{% endif %}">
@@ -119,7 +123,7 @@
     {# Info note #}
     <div class="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
         <p class="text-sm text-orange-800">
-            <strong>Active Retirement Phase:</strong> Your most active years with moderate healthcare costs. Social Security and pension provide {{ results.total_social_security|currency|add:results.total_pension|currency }} in guaranteed income.
+            <strong>Active Retirement Phase:</strong> Your most active years with moderate healthcare costs. Portfolio withdrawals supplement your lifestyle during this period.
         </p>
     </div>
 </div>

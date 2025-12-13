@@ -281,23 +281,24 @@ class ActiveRetirementForm(BaseCalculatorForm):
         widget=forms.NumberInput(attrs={'placeholder': 'e.g., 8000', 'step': '0.01'})
     )
 
-    social_security_annual = forms.DecimalField(
-        label='Annual Social Security Income ($)',
-        max_digits=10,
-        decimal_places=2,
-        min_value=0,
-        required=False,
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 28000', 'step': '0.01'})
-    )
+    # Social Security and Pension - COMMENTED OUT FOR FUTURE FUNCTIONALITY
+    # social_security_annual = forms.DecimalField(
+    #     label='Annual Social Security Income ($)',
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0,
+    #     required=False,
+    #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 28000', 'step': '0.01'})
+    # )
 
-    pension_annual = forms.DecimalField(
-        label='Annual Pension Income ($)',
-        max_digits=10,
-        decimal_places=2,
-        min_value=0,
-        required=False,
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 15000', 'step': '0.01'})
-    )
+    # pension_annual = forms.DecimalField(
+    #     label='Annual Pension Income ($)',
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0,
+    #     required=False,
+    #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 15000', 'step': '0.01'})
+    # )
 
     expected_return = forms.DecimalField(
         label='Expected Annual Return (%)',
@@ -410,14 +411,15 @@ class LateRetirementForm(BaseCalculatorForm):
     #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
     # )
 
-    social_security_annual = forms.DecimalField(
-        label='Annual Social Security Income ($)',
-        max_digits=10,
-        decimal_places=2,
-        min_value=0,
-        required=False,
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 32000', 'step': '0.01'})
-    )
+    # Social Security - COMMENTED OUT FOR FUTURE FUNCTIONALITY
+    # social_security_annual = forms.DecimalField(
+    #     label='Annual Social Security Income ($)',
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0,
+    #     required=False,
+    #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 32000', 'step': '0.01'})
+    # )
 
     expected_return = forms.DecimalField(
         label='Expected Annual Return (%)',

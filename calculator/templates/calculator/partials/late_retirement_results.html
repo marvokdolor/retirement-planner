@@ -94,22 +94,23 @@
     </div>
     {% endcomment %}
 
-    {# Other costs and income #}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-white rounded-lg p-4 shadow min-w-0">
-            <div class="text-xs text-gray-500 uppercase mb-1">Total Portfolio Withdrawals</div>
-            <div class="text-xl font-semibold text-orange-600 break-words">
-                {{ results.total_withdrawals|currency }}
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 shadow border border-blue-200 min-w-0">
-            <div class="text-xs text-blue-700 uppercase mb-1">Social Security Income</div>
-            <div class="text-xl font-semibold text-blue-700 break-words">
-                {{ results.total_social_security|currency }}
-            </div>
+    {# Portfolio withdrawals #}
+    <div class="bg-white rounded-lg p-4 shadow mb-6">
+        <div class="text-xs text-gray-500 uppercase mb-1">Total Portfolio Withdrawals</div>
+        <div class="text-xl font-semibold text-orange-600 break-words">
+            {{ results.total_withdrawals|currency }}
         </div>
     </div>
+
+    {# Social Security Income - COMMENTED OUT FOR FUTURE FUNCTIONALITY #}
+    {% comment %}
+    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 shadow border border-blue-200 min-w-0">
+        <div class="text-xs text-blue-700 uppercase mb-1">Social Security Income</div>
+        <div class="text-xl font-semibold text-blue-700 break-words">
+            {{ results.total_social_security|currency }}
+        </div>
+    </div>
+    {% endcomment %}
 
     {# Summary breakdown #}
     <div class="mt-6 pt-6 border-t border-indigo-200">
@@ -130,9 +131,11 @@
                 <span class="ml-4 text-gray-500">• LTC out-of-pocket: {{ results.net_ltc_out_of_pocket|currency }}</span>
             </div>
             {% endcomment %}
+            {% comment %}
             <div class="flex justify-between text-xs text-gray-500 italic">
                 <span>(Social Security received separately)</span>
             </div>
+            {% endcomment %}
             <div class="flex justify-between pt-2 border-t border-gray-300 text-base font-bold">
                 <span>Final Portfolio / Legacy:</span>
                 <span class="{% if results.ending_portfolio > 0 %}text-indigo-600{% else %}text-red-600{% endif %}">
