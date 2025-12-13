@@ -12,20 +12,27 @@ from .admin import ScenarioAdmin
 class ScenarioModelTests(TestCase):
     """Test the Scenario model."""
 
+    def setUp(self):
+        """Create a test user for scenario tests."""
+        self.user = User.objects.create_user(username='testuser', password='testpass123')
+
     def test_create_scenario(self):
         """Test creating a scenario with valid data."""
         scenario = Scenario.objects.create(
+            user=self.user,
             name="Test Scenario",
             data={"age": 30, "savings": 50000}
         )
         self.assertEqual(scenario.name, "Test Scenario")
         self.assertEqual(scenario.data["age"], 30)
+        self.assertEqual(scenario.user, self.user)
         self.assertIsNotNone(scenario.created_at)
         self.assertIsNotNone(scenario.updated_at)
 
     def test_scenario_str_representation(self):
         """Test the string representation of a scenario."""
         scenario = Scenario.objects.create(
+            user=self.user,
             name="My Retirement Plan",
             data={}
         )
@@ -33,8 +40,8 @@ class ScenarioModelTests(TestCase):
 
     def test_scenarios_ordered_by_updated_at(self):
         """Test that scenarios are ordered by most recently updated."""
-        scenario1 = Scenario.objects.create(name="First", data={})
-        scenario2 = Scenario.objects.create(name="Second", data={})
+        scenario1 = Scenario.objects.create(user=self.user, name="First", data={})
+        scenario2 = Scenario.objects.create(user=self.user, name="Second", data={})
 
         scenarios = Scenario.objects.all()
         self.assertEqual(scenarios[0], scenario2)  # Most recent first
@@ -99,7 +106,10 @@ class ScenarioViewTests(TestCase):
     def setUp(self):
         """Set up test client and test data."""
         self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.client.login(username='testuser', password='testpass123')
         self.scenario = Scenario.objects.create(
+            user=self.user,
             name="Test Scenario",
             data={"starting_portfolio": "50000", "monthly_contribution": "1000"}
         )
@@ -161,6 +171,8 @@ class MultiPhaseCalculatorViewTests(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.client.login(username='testuser', password='testpass123')
 
     def test_multi_phase_calculator_get(self):
         """Test GET request to multi-phase calculator."""
@@ -173,6 +185,7 @@ class MultiPhaseCalculatorViewTests(TestCase):
     def test_multi_phase_calculator_with_scenario(self):
         """Test multi-phase calculator loads scenario data."""
         scenario = Scenario.objects.create(
+            user=self.user,
             name="Loaded Plan",
             data={"starting_portfolio": "100000"}
         )
@@ -188,6 +201,8 @@ class SaveScenarioTests(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.client.login(username='testuser', password='testpass123')
 
     def test_save_scenario_with_valid_data(self):
         """Test saving a scenario via HTMX."""
@@ -290,7 +305,10 @@ class ScenarioComparisonTests(TestCase):
     def setUp(self):
         """Create test scenarios for comparison."""
         self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.client.login(username='testuser', password='testpass123')
         self.scenario1 = Scenario.objects.create(
+            user=self.user,
             name="Conservative Plan",
             data={
                 "current_age": "30",
@@ -301,6 +319,7 @@ class ScenarioComparisonTests(TestCase):
             }
         )
         self.scenario2 = Scenario.objects.create(
+            user=self.user,
             name="Aggressive Plan",
             data={
                 "current_age": "30",
