@@ -408,7 +408,7 @@ class LateRetirementForm(BaseCalculatorForm):
     #     required=False,
     #     help_text='Annual benefit from LTC policy',
     #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
-    )
+    # )
 
     social_security_annual = forms.DecimalField(
         label='Annual Social Security Income ($)',
