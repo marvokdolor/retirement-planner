@@ -10,16 +10,16 @@
 
     {# Portfolio change overview #}
     <div class="bg-white rounded-lg p-6 mb-6 shadow-md">
-        <div class="grid grid-cols-2 gap-4">
-            <div>
+        <div class="grid grid-cols-2 gap-6">
+            <div class="min-w-0">
                 <div class="text-xs text-gray-500 uppercase mb-1">Starting Portfolio</div>
-                <div class="text-2xl font-bold text-gray-700">
+                <div class="text-lg font-bold text-gray-700 break-words">
                     {{ results.starting_portfolio|currency }}
                 </div>
             </div>
-            <div>
+            <div class="min-w-0">
                 <div class="text-xs text-gray-500 uppercase mb-1">Ending Portfolio</div>
-                <div class="text-2xl font-bold {% if results.ending_portfolio >= results.starting_portfolio %}text-green-600{% else %}text-orange-600{% endif %}">
+                <div class="text-lg font-bold {% if results.ending_portfolio >= results.starting_portfolio %}text-green-600{% else %}text-orange-600{% endif %} break-words">
                     {{ results.ending_portfolio|currency }}
                 </div>
             </div>
@@ -38,16 +38,16 @@
 
     {# Income and contributions #}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-white rounded-lg p-4 shadow">
+        <div class="bg-white rounded-lg p-4 shadow min-w-0">
             <div class="text-xs text-gray-500 uppercase mb-1">Total Part-Time Income</div>
-            <div class="text-2xl font-semibold text-green-600">
+            <div class="text-xl font-semibold text-green-600 break-words">
                 {{ results.total_part_time_income|currency }}
             </div>
         </div>
 
-        <div class="bg-white rounded-lg p-4 shadow">
+        <div class="bg-white rounded-lg p-4 shadow min-w-0">
             <div class="text-xs text-gray-500 uppercase mb-1">Total Contributions</div>
-            <div class="text-2xl font-semibold text-blue-600">
+            <div class="text-xl font-semibold text-blue-600 break-words">
                 {{ results.total_contributions|currency }}
             </div>
         </div>
@@ -55,16 +55,16 @@
 
     {# Withdrawals and investment gains #}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-white rounded-lg p-4 shadow">
+        <div class="bg-white rounded-lg p-4 shadow min-w-0">
             <div class="text-xs text-gray-500 uppercase mb-1">Total Withdrawals</div>
-            <div class="text-2xl font-semibold text-orange-600">
+            <div class="text-xl font-semibold text-orange-600 break-words">
                 {{ results.total_withdrawals|currency }}
             </div>
         </div>
 
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 shadow border border-green-200">
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 shadow border border-green-200 min-w-0">
             <div class="text-xs text-green-700 uppercase mb-1">Investment Gains</div>
-            <div class="text-2xl font-semibold text-green-700">
+            <div class="text-xl font-semibold text-green-700 break-words">
                 {{ results.investment_gains|currency }}
             </div>
         </div>
