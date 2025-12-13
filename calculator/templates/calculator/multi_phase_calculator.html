@@ -8,12 +8,18 @@
     <div class="container mx-auto px-4">
         {# Header #}
         <div class="text-center mb-8">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">
-                Multi-Phase Retirement Calculator
-            </h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div class="flex justify-center items-center gap-4 mb-4">
+                <h1 class="text-5xl font-bold text-gray-800">
+                    Multi-Phase Retirement Calculator
+                </h1>
+            </div>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
                 Plan your entire retirement journey across all four critical phases
             </p>
+            <a href="{% url 'calculator:multi_phase_calculator' %}"
+               class="inline-block bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition">
+                Clear All
+            </a>
         </div>
 
         {# Loaded Scenario Message #}
