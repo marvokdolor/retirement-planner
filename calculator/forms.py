@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import Scenario
 
@@ -164,3 +166,33 @@ class ScenarioNameForm(forms.ModelForm):
                 'placeholder': 'e.g., Conservative Retirement Plan'
             })
         }
+
+
+class CustomUserCreationForm(UserCreationForm):
+    """Custom registration form that requires email address."""
+    email = forms.EmailField(
+        required=True,
+        help_text='Required. We\'ll send scenario reports to this email.',
+        widget=forms.EmailInput(attrs={
+            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+            'placeholder': 'your.email@example.com'
+        })
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'placeholder': 'Choose a username'
+            })
+        }
+
+    def save(self, commit=True):
+        """Save email to user model."""
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user

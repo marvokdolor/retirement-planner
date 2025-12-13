@@ -41,6 +41,18 @@
                     {% endif %}
                 </div>
                 <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                    {% if form.email.help_text %}
+                        <p class="mt-1 text-xs text-gray-500">{{ form.email.help_text }}</p>
+                    {% endif %}
+                </div>
+                <div>
                     <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
                         Password
                     </label>
@@ -76,7 +88,7 @@
 </div>
 
 <style>
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="email"], input[type="password"] {
         appearance: none;
         border-radius: 0.375rem;
         width: 100%;
@@ -84,7 +96,7 @@
         border: 1px solid #d1d5db;
         color: #1f2937;
     }
-    input[type="text"]:focus, input[type="password"]:focus {
+    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
         outline: none;
         border-color: #3b82f6;
         ring: 2px;

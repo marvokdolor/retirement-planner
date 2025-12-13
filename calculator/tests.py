@@ -445,3 +445,70 @@ class EmailScenarioTests(TestCase):
 
         # Should return 404 (not found, because of user filtering)
         self.assertEqual(response.status_code, 404)
+
+    def test_email_scenario_requires_user_email(self):
+        """Test that user must have an email address to send reports."""
+        # Create user without email
+        user_no_email = User.objects.create_user(
+            username='noemail',
+            password='testpass123'
+        )
+        # Explicitly set email to empty string
+        user_no_email.email = ''
+        user_no_email.save()
+
+        self.client.login(username='noemail', password='testpass123')
+
+        scenario = Scenario.objects.create(
+            user=user_no_email,
+            name="Test Plan",
+            data={"current_age": "30"}
+        )
+
+        response = self.client.post(
+            reverse('calculator:email_scenario', kwargs={'scenario_id': scenario.pk})
+        )
+
+        # Should show error message about missing email
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('email address', response.content.decode().lower())
+
+
+class RegistrationTests(TestCase):
+    """Test user registration."""
+
+    def test_registration_requires_email(self):
+        """Test that registration form requires email address."""
+        response = self.client.post(
+            reverse('register'),
+            {
+                'username': 'newuser',
+                'password1': 'testpass123',
+                'password2': 'testpass123',
+                # No email provided
+            }
+        )
+
+        # Should not create user without email
+        self.assertFalse(User.objects.filter(username='newuser').exists())
+        # Should show email field error
+        self.assertIn('email', response.content.decode().lower())
+
+    def test_registration_with_email_succeeds(self):
+        """Test that registration with email creates user and sets email."""
+        response = self.client.post(
+            reverse('register'),
+            {
+                'username': 'newuser',
+                'email': 'newuser@example.com',
+                'password1': 'testpass123',
+                'password2': 'testpass123',
+            }
+        )
+
+        # Should create user
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+
+        # User should have email set
+        user = User.objects.get(username='newuser')
+        self.assertEqual(user.email, 'newuser@example.com')
