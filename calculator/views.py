@@ -148,6 +148,7 @@ class ScenarioDeleteView(LoginRequiredMixin, DeleteView):
 # =============================================================================
 # Compare two scenarios side-by-side and highlight better performer.
 
+@login_required
 def compare_scenarios(request):
     """
     Compare two scenarios side-by-side.
@@ -157,8 +158,7 @@ def compare_scenarios(request):
     from .phase_calculator import calculate_accumulation_phase
     from decimal import Decimal
 
-    # Only show scenarios if user is authenticated
-    scenarios = Scenario.objects.filter(user=request.user) if request.user.is_authenticated else Scenario.objects.none()
+    scenarios = Scenario.objects.filter(user=request.user)
     comparison_data = None
     error_message = None
     better_scenario = None
