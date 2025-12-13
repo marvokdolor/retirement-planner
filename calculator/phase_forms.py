@@ -389,24 +389,25 @@ class LateRetirementForm(BaseCalculatorForm):
         widget=forms.NumberInput(attrs={'placeholder': 'e.g., 15000', 'step': '0.01'})
     )
 
-    long_term_care_annual = forms.DecimalField(
-        label='Expected Long-Term Care Costs ($)',
-        max_digits=10,
-        decimal_places=2,
-        min_value=0,
-        required=False,
-        help_text='Assisted living, nursing home, in-home care',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 75000', 'step': '0.01'})
-    )
+    # Long-term care fields - COMMENTED OUT FOR FUTURE FUNCTIONALITY
+    # long_term_care_annual = forms.DecimalField(
+    #     label='Expected Long-Term Care Costs ($)',
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0,
+    #     required=False,
+    #     help_text='Assisted living, nursing home, in-home care',
+    #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 75000', 'step': '0.01'})
+    # )
 
-    ltc_insurance_coverage = forms.DecimalField(
-        label='Long-Term Care Insurance Coverage ($)',
-        max_digits=10,
-        decimal_places=2,
-        min_value=0,
-        required=False,
-        help_text='Annual benefit from LTC policy',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
+    # ltc_insurance_coverage = forms.DecimalField(
+    #     label='Long-Term Care Insurance Coverage ($)',
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     min_value=0,
+    #     required=False,
+    #     help_text='Annual benefit from LTC policy',
+    #     widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
     )
 
     social_security_annual = forms.DecimalField(
