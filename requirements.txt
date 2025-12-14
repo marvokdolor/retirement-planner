@@ -10,7 +10,7 @@ dj-database-url==3.0.1
 Django==6.0
 django-browser-reload==1.21.0
 django-htmx==1.27.0
-django-q-cluster==1.9.0
+django-q2==1.9.0
 django-tailwind==4.4.2
 gunicorn==23.0.0
 idna==3.11
