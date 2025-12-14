@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'theme',  # Tailwind theme app
     'django_browser_reload',
     'django_htmx',  # HTMX integration
+    'django_q',  # Background tasks
     # Project apps
     'calculator',
 ]
@@ -153,6 +154,21 @@ LOGOUT_REDIRECT_URL = 'calculator:multi_phase_calculator'
 # Email Settings (Console backend for development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@retirementplanner.com'
+
+# Django-Q Configuration (Background Tasks)
+Q_CLUSTER = {
+    'name': 'retirement_planner',
+    'workers': 2,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'redis': None,  # Use Django ORM instead of Redis
+    'orm': 'default'  # Use default database for task queue
+}
 
 # Security Settings
 # These are good practices even for development

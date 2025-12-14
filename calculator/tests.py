@@ -404,25 +404,14 @@ class EmailScenarioTests(TestCase):
         )
 
     def test_email_scenario_report(self):
-        """Test sending scenario report via email."""
-        from django.core import mail
-
+        """Test queuing scenario report email."""
         response = self.client.post(
             reverse('calculator:email_scenario', kwargs={'scenario_id': self.scenario.pk})
         )
 
-        # Should return success message
+        # Should return success message (queued, not sent immediately)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'email sent')
-
-        # Should send one email
-        self.assertEqual(len(mail.outbox), 1)
-
-        # Email should be sent to user's email
-        self.assertEqual(mail.outbox[0].to, ['test@example.com'])
-
-        # Email should contain scenario name
-        self.assertIn('Test Retirement Plan', mail.outbox[0].body)
+        self.assertContains(response, 'queued')
 
     def test_email_scenario_requires_ownership(self):
         """Test that users can only email their own scenarios."""
@@ -512,3 +501,103 @@ class RegistrationTests(TestCase):
         # User should have email set
         user = User.objects.get(username='newuser')
         self.assertEqual(user.email, 'newuser@example.com')
+
+
+class DjangoMessagesTests(TestCase):
+    """Test Django messages framework integration."""
+
+    def setUp(self):
+        """Set up test client and user."""
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.client.login(username='testuser', password='testpass123')
+
+    def test_scenario_save_shows_success_message(self):
+        """Test that saving a scenario shows a success message."""
+        response = self.client.post(
+            reverse('calculator:save_scenario'),
+            {
+                'name': 'Test Plan',
+                'current_age': '30',
+                'retirement_start_age': '65',
+            }
+        )
+
+        # HTMX view returns HTML fragment with success message
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('success', response.content.decode().lower())
+        self.assertIn('Test Plan', response.content.decode())
+
+    def test_email_scenario_shows_success_message(self):
+        """Test that emailing a scenario shows a success message."""
+        scenario = Scenario.objects.create(
+            user=self.user,
+            name='Test Scenario',
+            data={
+                'current_age': '30',
+                'retirement_start_age': '65',
+                'current_savings': '50000',
+                'monthly_contribution': '1000',
+                'expected_return': '7',
+                'employer_match_rate': '50'
+            }
+        )
+
+        response = self.client.post(
+            reverse('calculator:email_scenario', kwargs={'scenario_id': scenario.pk}),
+            follow=True
+        )
+
+        # Check that response contains success indication
+        self.assertIn('success', response.content.decode().lower())
+
+
+class BackgroundEmailTests(TestCase):
+    """Test background email sending with Django-Q."""
+
+    def setUp(self):
+        """Set up test client and user."""
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.client.login(username='testuser', password='testpass123')
+
+    def test_email_scenario_queues_background_task(self):
+        """Test that emailing a scenario queues a background task."""
+        from django_q.models import OrmQ
+
+        scenario = Scenario.objects.create(
+            user=self.user,
+            name='Background Test',
+            data={
+                'current_age': '30',
+                'retirement_start_age': '65',
+                'current_savings': '50000',
+                'monthly_contribution': '1000',
+                'expected_return': '7',
+                'employer_match_rate': '50'
+            }
+        )
+
+        # Clear any existing queued tasks
+        OrmQ.objects.all().delete()
+
+        response = self.client.post(
+            reverse('calculator:email_scenario', kwargs={'scenario_id': scenario.pk})
+        )
+
+        # Should return success immediately (not wait for email)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('queued', response.content.decode().lower())
+
+        # Should have queued a task
+        queued_tasks = OrmQ.objects.all()
+        self.assertEqual(queued_tasks.count(), 1)
+        self.assertEqual(queued_tasks.first().func(), 'calculator.tasks.send_scenario_email')
