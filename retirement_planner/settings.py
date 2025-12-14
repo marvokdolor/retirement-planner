@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third-party apps
-    'tailwind',
-    'theme',  # Tailwind theme app
     'django_htmx',  # HTMX integration
     'django_q',  # Background tasks
     # Project apps
@@ -153,14 +151,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Tailwind CSS Configuration
-TAILWIND_APP_NAME = 'theme'
-
-# Internal IPs for django-browser-reload
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
 
 # Authentication Settings
 LOGIN_URL = 'login'
