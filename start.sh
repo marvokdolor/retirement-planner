@@ -13,6 +13,11 @@ python manage.py migrate --noinput 2>&1
 echo "Collecting static files..." >&2
 python manage.py collectstatic --noinput 2>&1
 
-# Start gunicorn
+# Start gunicorn with error logging
 echo "Starting server..." >&2
-exec gunicorn retirement_planner.wsgi:application --bind 0.0.0.0:$PORT
+exec gunicorn retirement_planner.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --log-level debug \
+    --access-logfile - \
+    --error-logfile - \
+    --capture-output
