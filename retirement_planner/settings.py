@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     # Third-party apps
     'tailwind',
     'theme',  # Tailwind theme app
-    'django_browser_reload',
     'django_htmx',  # HTMX integration
     'django_q',  # Background tasks
     # Project apps
@@ -58,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
     'django_htmx.middleware.HtmxMiddleware',  # HTMX middleware
 ]
 
@@ -132,6 +130,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'theme' / 'static',
+]
 
 # WhiteNoise Configuration for Production Static File Serving
 # Enables compression and caching of static files
