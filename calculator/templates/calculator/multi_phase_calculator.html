@@ -151,15 +151,15 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
-                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="accumulation-loading">
-                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors relative">
+                                <span class="htmx-indicator absolute inset-0 flex items-center justify-center" id="accumulation-loading">
+                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
+                                    Calculating...
                                 </span>
-                                <span class="htmx-indicator-opposite text-center" id="accumulation-loading">Calculate Accumulation Phase</span>
-                                <span class="htmx-indicator text-center" id="accumulation-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite block text-center w-full" id="accumulation-loading">Calculate Accumulation Phase</span>
                             </button>
                         </form>
                     </div>
@@ -236,15 +236,15 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
-                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="phased-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors relative">
+                                <span class="htmx-indicator absolute inset-0 flex items-center justify-center" id="phased-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
+                                    Calculating...
                                 </span>
-                                <span class="htmx-indicator-opposite text-center" id="phased-retirement-loading">Calculate Phased Retirement</span>
-                                <span class="htmx-indicator text-center" id="phased-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite block text-center w-full" id="phased-retirement-loading">Calculate Phased Retirement</span>
                             </button>
                         </form>
                     </div>
@@ -321,15 +321,15 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
-                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="active-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors relative">
+                                <span class="htmx-indicator absolute inset-0 flex items-center justify-center" id="active-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 74 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
+                                    Calculating...
                                 </span>
-                                <span class="htmx-indicator-opposite text-center" id="active-retirement-loading">Calculate Active Retirement</span>
-                                <span class="htmx-indicator text-center" id="active-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite block text-center w-full" id="active-retirement-loading">Calculate Active Retirement</span>
                             </button>
                         </form>
                     </div>
@@ -406,15 +406,15 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
-                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="late-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors relative">
+                                <span class="htmx-indicator absolute inset-0 flex items-center justify-center" id="late-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
+                                    Calculating...
                                 </span>
-                                <span class="htmx-indicator-opposite text-center" id="late-retirement-loading">Calculate Late Retirement</span>
-                                <span class="htmx-indicator text-center" id="late-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite block text-center w-full" id="late-retirement-loading">Calculate Late Retirement</span>
                             </button>
                         </form>
                     </div>
