@@ -221,6 +221,16 @@ if not DEBUG:
     # Trust Railway's proxy for HTTPS (prevents redirect loop)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+    # HTTP Strict Transport Security (HSTS)
+    # Tells browsers to only access site via HTTPS for next year
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # Redirect all HTTP to HTTPS (only in production with proper SSL)
+    # Note: Railway handles SSL termination, so we don't need this
+    # SECURE_SSL_REDIRECT = True  # Commented out - Railway uses proxy
+
 # Logging Configuration
 LOGGING = {
     'version': 1,
