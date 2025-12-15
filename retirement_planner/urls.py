@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from django.conf import settings
 from calculator.views import register
 
 urlpatterns = [
@@ -25,5 +26,10 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Built-in auth URLs
     path('accounts/register/', register, name='register'),  # Custom registration
     path('admin/', admin.site.urls),
-    path('__reload__/', include('django_browser_reload.urls')),
 ]
+
+# Add debug toolbar URLs only in development
+if settings.DEBUG:
+    urlpatterns += [
+        path('__debug__/', include('debug_toolbar.urls')),
+    ]

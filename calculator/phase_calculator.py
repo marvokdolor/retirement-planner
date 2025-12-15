@@ -7,6 +7,40 @@ Each phase has specific calculation logic tailored to its unique characteristics
 from decimal import Decimal
 from dataclasses import dataclass
 from typing import Optional
+from django.core.cache import cache
+from functools import wraps
+import hashlib
+import json
+
+
+# ===== CACHING UTILITY =====
+
+def cache_calculation(timeout=3600):
+    """
+    Decorator to cache calculation results.
+
+    Args:
+        timeout: Cache timeout in seconds (default: 1 hour)
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(data: dict):
+            # Create a cache key from the function name and input data
+            # Sort keys for consistent hashing
+            data_str = json.dumps(data, sort_keys=True, default=str)
+            cache_key = f"calc_{func.__name__}_{hashlib.md5(data_str.encode()).hexdigest()}"
+
+            # Try to get cached result
+            cached_result = cache.get(cache_key)
+            if cached_result is not None:
+                return cached_result
+
+            # Calculate and cache result
+            result = func(data)
+            cache.set(cache_key, result, timeout)
+            return result
+        return wrapper
+    return decorator
 
 
 # ===== RESULT DATACLASSES =====
@@ -66,6 +100,7 @@ class LateRetirementResults:
 
 # ===== PHASE 1: ACCUMULATION =====
 
+@cache_calculation(timeout=3600)  # Cache for 1 hour
 def calculate_accumulation_phase(data: dict) -> AccumulationResults:
     """
     Calculate accumulation phase: Building wealth through contributions.
@@ -129,6 +164,7 @@ def calculate_accumulation_phase(data: dict) -> AccumulationResults:
 
 # ===== PHASE 2: PHASED RETIREMENT =====
 
+@cache_calculation(timeout=3600)  # Cache for 1 hour
 def calculate_phased_retirement_phase(data: dict) -> PhasedRetirementResults:
     """
     Calculate phased retirement: Semi-retired with optional income and withdrawals.
@@ -189,6 +225,7 @@ def calculate_phased_retirement_phase(data: dict) -> PhasedRetirementResults:
 
 # ===== PHASE 3: ACTIVE RETIREMENT =====
 
+@cache_calculation(timeout=3600)  # Cache for 1 hour
 def calculate_active_retirement_phase(data: dict) -> ActiveRetirementResults:
     """
     Calculate active retirement: Living off portfolio with inflation-adjusted expenses.
@@ -276,6 +313,7 @@ def calculate_active_retirement_phase(data: dict) -> ActiveRetirementResults:
 
 # ===== PHASE 4: LATE RETIREMENT =====
 
+@cache_calculation(timeout=3600)  # Cache for 1 hour
 def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
     """
     Calculate late retirement: High healthcare costs and long-term care planning.
