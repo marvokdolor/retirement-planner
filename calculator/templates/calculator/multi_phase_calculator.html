@@ -39,13 +39,16 @@
 
         {# Tab Navigation #}
         <div class="bg-white rounded-t-xl shadow-lg border-b-2 border-gray-200">
-            <div class="flex overflow-x-auto">
+            <div class="flex overflow-x-auto" role="tablist" aria-label="Retirement phases">
                 <button
                     onclick="switchTab('accumulation')"
                     id="tab-accumulation"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="content-accumulation"
                     class="tab-button flex-1 px-6 py-4 text-center font-semibold border-b-4 border-blue-500 bg-blue-50 text-blue-700 transition-all hover:bg-blue-100">
                     <div class="flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                         </svg>
                         Phase 1: Accumulation
@@ -56,9 +59,12 @@
                 <button
                     onclick="switchTab('phased-retirement')"
                     id="tab-phased-retirement"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="content-phased-retirement"
                     class="tab-button flex-1 px-6 py-4 text-center font-semibold border-b-4 border-transparent text-gray-600 transition-all hover:bg-gray-50">
                     <div class="flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Phase 2: Phased
@@ -69,9 +75,12 @@
                 <button
                     onclick="switchTab('active-retirement')"
                     id="tab-active-retirement"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="content-active-retirement"
                     class="tab-button flex-1 px-6 py-4 text-center font-semibold border-b-4 border-transparent text-gray-600 transition-all hover:bg-gray-50">
                     <div class="flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Phase 3: Active
@@ -82,9 +91,12 @@
                 <button
                     onclick="switchTab('late-retirement')"
                     id="tab-late-retirement"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="content-late-retirement"
                     class="tab-button flex-1 px-6 py-4 text-center font-semibold border-b-4 border-transparent text-gray-600 transition-all hover:bg-gray-50">
                     <div class="flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                         </svg>
                         Phase 4: Late
@@ -97,7 +109,7 @@
         {# Tab Content #}
         <div class="bg-white rounded-b-xl shadow-lg p-8">
             {# Phase 1: Accumulation #}
-            <div id="content-accumulation" class="tab-content">
+            <div id="content-accumulation" class="tab-content" role="tabpanel" aria-labelledby="tab-accumulation">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
@@ -121,6 +133,7 @@
                               hx-target="#accumulation-results"
                               hx-indicator="#accumulation-loading"
                               hx-swap="innerHTML swap:0.3s settle:0.3s"
+                              aria-label="Accumulation phase calculator"
                               class="transition-all duration-300">
                             {% csrf_token %}
 
@@ -138,23 +151,23 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
-                                <span class="htmx-indicator" id="accumulation-loading">
-                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
+                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="accumulation-loading">
+                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
                                 </span>
-                                <span class="htmx-indicator-opposite" id="accumulation-loading">Calculate Accumulation Phase</span>
-                                <span class="htmx-indicator" id="accumulation-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite text-center" id="accumulation-loading">Calculate Accumulation Phase</span>
+                                <span class="htmx-indicator text-center" id="accumulation-loading">Calculating...</span>
                             </button>
                         </form>
                     </div>
 
                     {# Results Column #}
-                    <div id="accumulation-results" class="flex items-center justify-center text-gray-400 transition-all duration-500">
+                    <div id="accumulation-results" class="flex items-center justify-center text-gray-400 transition-all duration-500" role="region" aria-live="polite" aria-label="Accumulation phase calculation results">
                         <div class="text-center animate-fade-in">
-                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                             <p>Fill out the form and calculate to see your results</p>
@@ -164,7 +177,7 @@
             </div>
 
             {# Phase 2: Phased Retirement #}
-            <div id="content-phased-retirement" class="tab-content hidden">
+            <div id="content-phased-retirement" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-phased-retirement">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
@@ -186,7 +199,8 @@
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_phased_retirement' %}"
                               hx-target="#phased-retirement-results"
-                              hx-indicator="#phased-retirement-loading">
+                              hx-indicator="#phased-retirement-loading"
+                              aria-label="Phased retirement calculator">
                             {% csrf_token %}
 
                             <div class="space-y-4">
@@ -222,23 +236,23 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
-                                <span class="htmx-indicator" id="phased-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
+                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="phased-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
                                 </span>
-                                <span class="htmx-indicator-opposite" id="phased-retirement-loading">Calculate Phased Retirement</span>
-                                <span class="htmx-indicator" id="phased-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite text-center" id="phased-retirement-loading">Calculate Phased Retirement</span>
+                                <span class="htmx-indicator text-center" id="phased-retirement-loading">Calculating...</span>
                             </button>
                         </form>
                     </div>
 
                     {# Results Column #}
-                    <div id="phased-retirement-results" class="flex items-center justify-center text-gray-400">
+                    <div id="phased-retirement-results" class="flex items-center justify-center text-gray-400" role="region" aria-live="polite" aria-label="Phased retirement calculation results">
                         <div class="text-center">
-                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                             <p>Fill out the form and calculate to see your results</p>
@@ -248,7 +262,7 @@
             </div>
 
             {# Phase 3: Active Retirement #}
-            <div id="content-active-retirement" class="tab-content hidden">
+            <div id="content-active-retirement" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-active-retirement">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
@@ -270,7 +284,8 @@
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_active_retirement' %}"
                               hx-target="#active-retirement-results"
-                              hx-indicator="#active-retirement-loading">
+                              hx-indicator="#active-retirement-loading"
+                              aria-label="Active retirement calculator">
                             {% csrf_token %}
 
                             <div class="space-y-4">
@@ -306,23 +321,23 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
-                                <span class="htmx-indicator" id="active-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
+                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="active-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
                                 </span>
-                                <span class="htmx-indicator-opposite" id="active-retirement-loading">Calculate Active Retirement</span>
-                                <span class="htmx-indicator" id="active-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite text-center" id="active-retirement-loading">Calculate Active Retirement</span>
+                                <span class="htmx-indicator text-center" id="active-retirement-loading">Calculating...</span>
                             </button>
                         </form>
                     </div>
 
                     {# Results Column #}
-                    <div id="active-retirement-results" class="flex items-center justify-center text-gray-400">
+                    <div id="active-retirement-results" class="flex items-center justify-center text-gray-400" role="region" aria-live="polite" aria-label="Active retirement calculation results">
                         <div class="text-center">
-                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                             <p>Fill out the form and calculate to see your results</p>
@@ -332,7 +347,7 @@
             </div>
 
             {# Phase 4: Late Retirement #}
-            <div id="content-late-retirement" class="tab-content hidden">
+            <div id="content-late-retirement" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-late-retirement">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {# Form Column #}
                     <div>
@@ -354,7 +369,8 @@
                         <form method="post"
                               hx-post="{% url 'calculator:calculate_late_retirement' %}"
                               hx-target="#late-retirement-results"
-                              hx-indicator="#late-retirement-loading">
+                              hx-indicator="#late-retirement-loading"
+                              aria-label="Late retirement and legacy calculator">
                             {% csrf_token %}
 
                             <div class="space-y-4">
@@ -390,23 +406,23 @@
                                 {% endfor %}
                             </div>
 
-                            <button type="submit" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
-                                <span class="htmx-indicator" id="late-retirement-loading">
-                                    <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                            <button type="submit" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center relative">
+                                <span class="htmx-indicator absolute left-1/2 -ml-12" id="late-retirement-loading">
+                                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                                     </svg>
                                 </span>
-                                <span class="htmx-indicator-opposite" id="late-retirement-loading">Calculate Late Retirement</span>
-                                <span class="htmx-indicator" id="late-retirement-loading">Calculating...</span>
+                                <span class="htmx-indicator-opposite text-center" id="late-retirement-loading">Calculate Late Retirement</span>
+                                <span class="htmx-indicator text-center" id="late-retirement-loading">Calculating...</span>
                             </button>
                         </form>
                     </div>
 
                     {# Results Column #}
-                    <div id="late-retirement-results" class="flex items-center justify-center text-gray-400">
+                    <div id="late-retirement-results" class="flex items-center justify-center text-gray-400" role="region" aria-live="polite" aria-label="Late retirement calculation results">
                         <div class="text-center">
-                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-24 h-24 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                             <p>Fill out the form and calculate to see your results</p>
@@ -418,7 +434,7 @@
 
         {# Save Scenario Section - After filling out the forms #}
         <div class="max-w-4xl mx-auto mt-8">
-            <div id="save-message"></div>
+            <div id="save-message" role="status" aria-live="polite"></div>
             {% if user.is_authenticated %}
                 <div class="bg-white rounded-lg shadow-lg p-8">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">💾 Save This Scenario</h2>
@@ -429,18 +445,27 @@
                           hx-post="{% url 'calculator:save_scenario' %}"
                           hx-target="#save-message"
                           hx-swap="innerHTML"
+                          hx-indicator="#save-loading"
+                          aria-label="Save retirement scenario"
                           class="flex items-center gap-4">
                         {% csrf_token %}
                         <div class="flex-1">
                             <input type="text"
                                    name="name"
                                    placeholder="Enter scenario name (e.g., Conservative Retirement Plan)"
+                                   aria-label="Scenario name"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
                                    required>
                         </div>
                         <button type="submit"
-                                class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap">
-                            Save Scenario
+                                class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap flex items-center gap-2">
+                            <span id="save-loading" class="htmx-indicator">
+                                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </span>
+                            <span>Save Scenario</span>
                         </button>
                     </form>
                 </div>
@@ -546,12 +571,13 @@ function switchTab(phase) {
         }, 200);
     });
 
-    // Reset all tab buttons
+    // Reset all tab buttons and ARIA states
     document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('border-blue-500', 'border-purple-500', 'border-orange-500', 'border-indigo-500');
         button.classList.remove('bg-blue-50', 'bg-purple-50', 'bg-orange-50', 'bg-indigo-50');
         button.classList.remove('text-blue-700', 'text-purple-700', 'text-orange-700', 'text-indigo-700');
         button.classList.add('border-transparent', 'text-gray-600');
+        button.setAttribute('aria-selected', 'false');
     });
 
     // Show selected tab content with fade-in
@@ -564,9 +590,10 @@ function switchTab(phase) {
         }, 50);
     }, 200);
 
-    // Highlight selected tab button
+    // Highlight selected tab button and update ARIA state
     const activeButton = document.getElementById('tab-' + phase);
     activeButton.classList.remove('border-transparent', 'text-gray-600');
+    activeButton.setAttribute('aria-selected', 'true');
 
     if (phase === 'accumulation') {
         activeButton.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700');
@@ -579,9 +606,42 @@ function switchTab(phase) {
     }
 }
 
-// Add smooth scroll behavior
+// Keyboard navigation for tabs
 document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Set up keyboard navigation for tab buttons
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const phases = ['accumulation', 'phased-retirement', 'active-retirement', 'late-retirement'];
+
+    tabButtons.forEach((button, index) => {
+        button.addEventListener('keydown', function(e) {
+            let newIndex = index;
+
+            // Arrow key navigation
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                newIndex = (index + 1) % phases.length; // Wrap to beginning
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                newIndex = (index - 1 + phases.length) % phases.length; // Wrap to end
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                newIndex = 0;
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                newIndex = phases.length - 1;
+            } else {
+                return; // Don't do anything for other keys
+            }
+
+            // Switch to new tab and focus it
+            const newPhase = phases[newIndex];
+            switchTab(newPhase);
+            document.getElementById('tab-' + newPhase).focus();
+        });
+    });
 });
 
 // Capture all form data when saving scenario
