@@ -4,14 +4,25 @@ A Django-based multi-phase retirement calculator with user authentication, scena
 
 🌐 **Live Demo**: [retirement.mkdolor.com](https://retirement.mkdolor.com)
 
+## Table of Contents
+
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 - **Multi-Phase Planning**: Calculate across 4 retirement phases (accumulation, phased retirement, active retirement, late retirement)
-- **User Authentication**: Secure registration and login with email verification
-- **Scenario Management**: Save, load, compare, and email retirement scenarios
+- **User Authentication**: Secure registration and login
+- **Scenario Management**: Save, load, compare, and email retirement plans
 - **HTMX-Powered**: Dynamic calculations without page reloads
-- **Accessibility**: Full ARIA support, keyboard navigation, screen reader friendly
-- **Production Ready**: Deployed on Railway with security headers, caching, and error handling
+- **Fully Accessible**: ARIA support, keyboard navigation, screen reader friendly
+- **Production Ready**: Security headers, caching, error handling
 
 ## Quick Start
 
@@ -33,7 +44,7 @@ pip install -r requirements.txt
 # Configure environment
 cp .env.example .env  # Edit with your SECRET_KEY
 
-# Initialize database and Tailwind
+# Initialize
 python manage.py migrate
 python manage.py tailwind install
 ```
@@ -66,47 +77,39 @@ calculator/
 ├── htmx_views.py           # HTMX endpoints
 ├── forms.py                # Forms & validation
 ├── phase_forms.py          # Multi-phase forms
-├── phase_calculator.py     # Calculation engine (with caching)
+├── phase_calculator.py     # Calculation engine
 ├── tests.py                # Test suite
 └── templates/              # HTML templates
 
 templates/
-├── base.html               # Base template with nav/footer
-├── 404.html, 500.html      # Custom error pages
+├── base.html               # Base template
+├── 404.html, 500.html      # Error pages
 └── registration/           # Auth templates
 ```
 
 ## Testing
 
 ```bash
-# Run all tests
 python manage.py test
-
-# Run specific test
-python manage.py test calculator.tests.CalculatorFunctionTests
 ```
 
 ## Future Enhancements
 
 ### High Priority
 - [ ] User profile edit page
-- [ ] Form state persistence across tabs
-- [ ] Social Security and Pension income tracking
+- [ ] Form state persistence
+- [ ] Social Security tracking
 
 ### Medium Priority
 - [ ] Export to PDF/Excel
 - [ ] Interactive charts
-- [ ] What-if scenario modeling
+- [ ] What-if modeling
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-Quick steps:
-1. Fork the repo
-2. Create feature branch
-3. Write tests
-4. Submit pull request
+Quick steps: Fork → Create branch → Write tests → Submit PR
 
 ## License
 

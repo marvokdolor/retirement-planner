@@ -1,57 +1,51 @@
 # Contributing to Retirement Planner
 
-Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to the Retirement Planner project.
+Thank you for your interest in contributing!
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Development Workflow](#development-workflow)
+- [Code Style](#code-style)
+- [Testing](#testing)
+- [Pull Request Process](#pull-request-process)
+- [Common Tasks](#common-tasks)
+- [Getting Help](#getting-help)
 
 ## Code of Conduct
 
 - Be respectful and inclusive
 - Welcome newcomers and help them learn
 - Focus on constructive feedback
-- Respect differing viewpoints and experiences
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.13+
-- Node.js 18+
-- Git
-- Familiarity with Django, HTMX, and Tailwind CSS
+- Python 3.13+, Node.js 18+, Git
+- Familiarity with Django, HTMX, Tailwind CSS
 
-### Development Setup
+### Setup
 
-1. **Fork the repository** on GitHub
+```bash
+# Fork repo, then clone
+git clone https://github.com/YOUR-USERNAME/retirement-planner.git
+cd retirement-planner
+git remote add upstream https://github.com/marvokdolor/retirement-planner.git
 
-2. **Clone your fork:**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/retirement-planner.git
-   cd retirement-planner
-   ```
+# Setup environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env  # Edit with your SECRET_KEY
+python manage.py migrate
+python manage.py tailwind install
 
-3. **Add upstream remote:**
-   ```bash
-   git remote add upstream https://github.com/marvokdolor/retirement-planner.git
-   ```
-
-4. **Set up development environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   cp .env.example .env
-   # Edit .env with your SECRET_KEY
-   python manage.py migrate
-   python manage.py tailwind install
-   ```
-
-5. **Run the development servers:**
-   ```bash
-   # Terminal 1 - Django
-   python manage.py runserver
-
-   # Terminal 2 - Tailwind
-   python manage.py tailwind start
-   ```
+# Run servers (separate terminals)
+python manage.py runserver
+python manage.py tailwind start
+```
 
 ## Development Workflow
 
