@@ -19,18 +19,18 @@ def currency(value):
     Format a number as USD currency.
 
     Usage: {{ amount|currency }}
-    Example: 1234567.89 → $1,234,567.89
+    Example: 1234567 → $1,234,567
     """
     if value is None:
-        return '$0.00'
+        return '$0'
 
     try:
         # Convert to Decimal for precision
         amount = Decimal(str(value))
-        # Format with commas and 2 decimal places
-        return f'${amount:,.2f}'
+        # Format with commas, no decimal places
+        return f'${amount:,.0f}'
     except (ValueError, TypeError, ArithmeticError):
-        return '$0.00'
+        return '$0'
 
 
 @register.filter(name='currency_short')

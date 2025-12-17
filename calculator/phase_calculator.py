@@ -60,6 +60,7 @@ class AccumulationResults:
 
     Attributes:
         years_to_retirement (int): Number of years until retirement
+        retirement_start_age (int): Age at retirement (for cascading to next phases)
         total_personal_contributions (Decimal): Sum of all personal contributions
         total_employer_contributions (Decimal): Sum of employer matching contributions
         future_value (Decimal): Projected portfolio value at retirement
@@ -67,6 +68,7 @@ class AccumulationResults:
         final_monthly_contribution (Decimal): Monthly contribution at retirement (after salary increases)
     """
     years_to_retirement: int
+    retirement_start_age: int
     total_personal_contributions: Decimal
     total_employer_contributions: Decimal
     future_value: Decimal
@@ -78,6 +80,7 @@ class AccumulationResults:
 class PhasedRetirementResults:
     """Results from phased retirement phase calculation"""
     phase_duration_years: int
+    full_retirement_age: int  # For cascading to Phase 3 and Phase 4
     starting_portfolio: Decimal
     ending_portfolio: Decimal
     total_contributions: Decimal
@@ -91,6 +94,7 @@ class PhasedRetirementResults:
 class ActiveRetirementResults:
     """Results from active retirement phase calculation"""
     phase_duration_years: int
+    active_retirement_end_age: int  # For cascading to Phase 4
     starting_portfolio: Decimal
     ending_portfolio: Decimal
     total_withdrawals: Decimal
@@ -205,6 +209,7 @@ def calculate_accumulation_phase(data: dict) -> AccumulationResults:
 
     return AccumulationResults(
         years_to_retirement=years_to_retirement,
+        retirement_start_age=retirement_start_age,
         total_personal_contributions=total_personal_contributions,
         total_employer_contributions=total_employer_contributions,
         future_value=future_value,
@@ -264,6 +269,7 @@ def calculate_phased_retirement_phase(data: dict) -> PhasedRetirementResults:
 
     return PhasedRetirementResults(
         phase_duration_years=phase_duration_years,
+        full_retirement_age=full_retirement_age,
         starting_portfolio=starting_portfolio,
         ending_portfolio=ending_portfolio,
         total_contributions=total_contributions,
@@ -351,6 +357,7 @@ def calculate_active_retirement_phase(data: dict) -> ActiveRetirementResults:
 
     return ActiveRetirementResults(
         phase_duration_years=phase_duration_years,
+        active_retirement_end_age=end_age,
         starting_portfolio=starting_portfolio,
         ending_portfolio=ending_portfolio,
         total_withdrawals=total_withdrawals,

@@ -61,19 +61,19 @@ class AccumulationPhaseForm(BaseCalculatorForm):
     )
 
     current_savings = forms.DecimalField(
-        label='Current Retirement Savings ($)',
+        label='Current Retirement Savings',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 50000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 50,000', 'step': '1'})
     )
 
     monthly_contribution = forms.DecimalField(
-        label='Monthly Contribution ($)',
+        label='Monthly Contribution',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 1500', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 1,500', 'step': '1'})
     )
 
     employer_match_rate = forms.DecimalField(
@@ -149,12 +149,12 @@ class PhasedRetirementForm(BaseCalculatorForm):
     """
 
     starting_portfolio = forms.DecimalField(
-        label='Portfolio Value at Phase Start ($)',
+        label='Portfolio Value at Phase Start',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Value accumulated from Phase 1',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 800000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 800,000', 'step': '1'})
     )
 
     phase_start_age = forms.IntegerField(
@@ -173,33 +173,33 @@ class PhasedRetirementForm(BaseCalculatorForm):
     )
 
     part_time_income = forms.DecimalField(
-        label='Annual Part-Time Income ($)',
+        label='Annual Part-Time Income',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         required=False,
         help_text='Consulting, part-time work, etc.',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40,000', 'step': '1'})
     )
 
     monthly_contribution = forms.DecimalField(
-        label='Optional Monthly Contributions ($)',
+        label='Optional Monthly Contributions',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         required=False,
         help_text='If still contributing from part-time income',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 500', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 500', 'step': '1'})
     )
 
     annual_withdrawal = forms.DecimalField(
-        label='Annual Withdrawal Needed ($)',
+        label='Annual Withdrawal Needed',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         required=False,
         help_text='Supplement part-time income if needed',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 20000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 20,000', 'step': '1'})
     )
 
     expected_return = forms.DecimalField(
@@ -255,12 +255,12 @@ class ActiveRetirementForm(BaseCalculatorForm):
     """
 
     starting_portfolio = forms.DecimalField(
-        label='Portfolio Value at Active Retirement Start ($)',
+        label='Portfolio Value at Active Retirement Start',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Value at beginning of this phase',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 1200000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 1,200,000', 'step': '1'})
     )
 
     active_retirement_start_age = forms.IntegerField(
@@ -279,21 +279,21 @@ class ActiveRetirementForm(BaseCalculatorForm):
     )
 
     annual_expenses = forms.DecimalField(
-        label='Annual Living Expenses ($)',
+        label='Annual Living Expenses',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Travel, activities, daily living',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 70000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 70,000', 'step': '1'})
     )
 
     annual_healthcare_costs = forms.DecimalField(
-        label='Annual Healthcare Costs ($)',
+        label='Annual Healthcare Costs',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Premiums, out-of-pocket, prescriptions',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 8000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 8,000', 'step': '1'})
     )
 
     # Social Security and Pension - COMMENTED OUT FOR FUTURE FUNCTIONALITY
@@ -374,12 +374,12 @@ class LateRetirementForm(BaseCalculatorForm):
     """
 
     starting_portfolio = forms.DecimalField(
-        label='Portfolio Value at Late Retirement Start ($)',
+        label='Portfolio Value at Late Retirement Start',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Remaining portfolio from Active Retirement',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 600000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 600,000', 'step': '1'})
     )
 
     late_retirement_start_age = forms.IntegerField(
@@ -398,21 +398,21 @@ class LateRetirementForm(BaseCalculatorForm):
     )
 
     annual_basic_expenses = forms.DecimalField(
-        label='Annual Basic Living Expenses ($)',
+        label='Annual Basic Living Expenses',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Reduced activity spending',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 40,000', 'step': '1'})
     )
 
     annual_healthcare_costs = forms.DecimalField(
-        label='Annual Healthcare Costs ($)',
+        label='Annual Healthcare Costs',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         help_text='Higher medical costs',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 15000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 15,000', 'step': '1'})
     )
 
     # Long-term care fields - COMMENTED OUT FOR FUTURE FUNCTIONALITY
@@ -467,13 +467,13 @@ class LateRetirementForm(BaseCalculatorForm):
     )
 
     desired_legacy = forms.DecimalField(
-        label='Desired Legacy Amount ($)',
+        label='Desired Legacy Amount',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         required=False,
         help_text='Target amount to leave heirs',
-        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 200000', 'step': '0.01'})
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 200,000', 'step': '1'})
     )
 
     def clean(self):
