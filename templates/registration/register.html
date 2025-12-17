@@ -15,6 +15,11 @@
                     Sign in
                 </a>
             </p>
+            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p class="text-sm text-blue-800">
+                    <strong>Why create an account?</strong> Accounts are only needed to save and compare multiple retirement scenarios. You can use the calculator without logging in.
+                </p>
+            </div>
         </div>
 
         <form class="mt-8 space-y-6" method="post">
@@ -38,18 +43,6 @@
                     {% endif %}
                     {% if form.username.help_text %}
                         <p class="mt-1 text-xs text-gray-500">{{ form.username.help_text }}</p>
-                    {% endif %}
-                </div>
-                <div>
-                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        Email
-                    </label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
-                    {% endif %}
-                    {% if form.email.help_text %}
-                        <p class="mt-1 text-xs text-gray-500">{{ form.email.help_text }}</p>
                     {% endif %}
                 </div>
                 <div>
