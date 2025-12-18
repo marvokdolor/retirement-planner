@@ -302,8 +302,8 @@ def _create_trajectory_chart(years, yearly_10th, yearly_50th, yearly_90th, title
     # Format y-axis as currency
     fig.update_yaxes(tickformat='$,.0f')
 
-    # Return HTML div - use 'cdn' for first call, rely on browser cache for subsequent calls
-    return fig.to_html(include_plotlyjs='cdn', div_id=chart_id, config={'displayModeBar': False})
+    # Return HTML div - Plotly is already loaded in base template, so don't include it again
+    return fig.to_html(include_plotlyjs=False, div_id=chart_id, config={'displayModeBar': False})
 
 
 @require_POST
