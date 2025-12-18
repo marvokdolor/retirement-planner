@@ -220,48 +220,66 @@ def save_scenario(request):
 
 # ===== MONTE CARLO SIMULATIONS =====
 
-def _create_trajectory_chart(years, yearly_10th, yearly_50th, yearly_90th, title="Portfolio Growth Projections"):
+def _create_trajectory_chart(years, yearly_10th, yearly_50th, yearly_90th, title="Portfolio Growth Projections", starting_age=None):
     """
     Create a Plotly line chart showing 3 trajectory lines (10th, 50th, 90th percentiles).
+
+    Args:
+        years: List of year indices (0, 1, 2, ...)
+        yearly_10th: 10th percentile values by year
+        yearly_50th: 50th percentile (median) values by year
+        yearly_90th: 90th percentile values by year
+        title: Chart title
+        starting_age: Optional starting age to display ages on x-axis instead of years
 
     Returns HTML div containing the interactive chart.
     """
     fig = go.Figure()
 
+    # Create x-axis labels (ages if provided, otherwise years)
+    if starting_age is not None:
+        x_labels = [starting_age + year for year in years]
+        x_axis_title = "Age"
+        hover_label = "Age"
+    else:
+        x_labels = years
+        x_axis_title = "Years from Now"
+        hover_label = "Year"
+
     # Add 90th percentile line (optimistic)
     fig.add_trace(go.Scatter(
-        x=years,
+        x=x_labels,
         y=yearly_90th,
         mode='lines',
         name='Optimistic (90th percentile)',
         line=dict(color='#10b981', width=2),  # green
-        hovertemplate='Year %{x}<br>$%{y:,.0f}<extra></extra>'
+        hovertemplate=f'{hover_label} %{{x}}<br>$%{{y:,.0f}}<extra></extra>'
     ))
 
     # Add 50th percentile line (median)
     fig.add_trace(go.Scatter(
-        x=years,
+        x=x_labels,
         y=yearly_50th,
         mode='lines',
         name='Median (50th percentile)',
         line=dict(color='#3b82f6', width=3),  # blue, thicker
-        hovertemplate='Year %{x}<br>$%{y:,.0f}<extra></extra>'
+        hovertemplate=f'{hover_label} %{{x}}<br>$%{{y:,.0f}}<extra></extra>'
     ))
 
     # Add 10th percentile line (pessimistic)
     fig.add_trace(go.Scatter(
-        x=years,
+        x=x_labels,
         y=yearly_10th,
         mode='lines',
         name='Pessimistic (10th percentile)',
         line=dict(color='#ef4444', width=2),  # red
-        hovertemplate='Year %{x}<br>$%{y:,.0f}<extra></extra>'
+        hovertemplate=f'{hover_label} %{{x}}<br>$%{{y:,.0f}}<extra></extra>'
     ))
 
     # Update layout
     fig.update_layout(
         title=dict(text=title, x=0.5, xanchor='center', font=dict(size=16)),
-        xaxis_title="Years from Now",
+        xaxis_title=x_axis_title,
         yaxis_title="Portfolio Value",
         hovermode='x unified',
         template='plotly_white',
@@ -332,7 +350,8 @@ def monte_carlo_accumulation(request):
             yearly_10th=results.yearly_10th,
             yearly_50th=results.yearly_50th,
             yearly_90th=results.yearly_90th,
-            title="Portfolio Growth Projections"
+            title="Portfolio Growth Projections",
+            starting_age=current_age
         )
 
         # Return results partial
@@ -362,6 +381,7 @@ def monte_carlo_withdrawal(request):
 
         # Calculate years from age fields (different forms have different field names)
         years = 0
+        start_age = None
         if request.POST.get('years'):
             years = int(request.POST.get('years'))
         elif request.POST.get('active_retirement_start_age') and request.POST.get('active_retirement_end_age'):
@@ -402,7 +422,8 @@ def monte_carlo_withdrawal(request):
             yearly_10th=results.yearly_10th,
             yearly_50th=results.yearly_50th,
             yearly_90th=results.yearly_90th,
-            title="Portfolio Withdrawal Projections"
+            title="Portfolio Withdrawal Projections",
+            starting_age=start_age
         )
 
         # Return results partial
