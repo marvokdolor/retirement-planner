@@ -518,7 +518,7 @@ def generate_retirement_pdf(scenario):
             # Use Phase 1 ending portfolio as Phase 2 starting portfolio
             phase2_starting = phase2_data.get('starting_portfolio', 0)
             if 'phase1' in phase_results:
-                phase2_starting = phase_results['phase1'].ending_portfolio
+                phase2_starting = phase_results['phase1'].future_value
 
             phase2_calc_data = {
                 'phase_start_age': int(phase2_data['phase_start_age']),
@@ -543,7 +543,7 @@ def generate_retirement_pdf(scenario):
             if 'phase2' in phase_results:
                 phase3_starting = phase_results['phase2'].ending_portfolio
             elif 'phase1' in phase_results:
-                phase3_starting = phase_results['phase1'].ending_portfolio
+                phase3_starting = phase_results['phase1'].future_value
 
             phase3_calc_data = {
                 'active_retirement_start_age': int(phase3_data['active_retirement_start_age']),
@@ -570,7 +570,7 @@ def generate_retirement_pdf(scenario):
             elif 'phase2' in phase_results:
                 phase4_starting = phase_results['phase2'].ending_portfolio
             elif 'phase1' in phase_results:
-                phase4_starting = phase_results['phase1'].ending_portfolio
+                phase4_starting = phase_results['phase1'].future_value
 
             phase4_calc_data = {
                 'late_retirement_start_age': int(phase4_data['late_retirement_start_age']),
