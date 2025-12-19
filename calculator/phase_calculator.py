@@ -305,35 +305,46 @@ def calculate_active_retirement_phase(data: dict) -> ActiveRetirementResults:
     inflation_rate = Decimal(str(data['inflation_rate']))
 
     phase_duration_years = end_age - start_age
+    phase_duration_months = phase_duration_years * 12
     annual_return_rate = expected_return / Decimal('100')
     annual_inflation_rate = inflation_rate / Decimal('100')
 
-    # Simulate year by year (conservative approach)
+    # Convert to monthly rates
+    monthly_return_rate = annual_return_rate / Decimal('12')
+    monthly_inflation_rate = annual_inflation_rate / Decimal('12')
+
+    # Convert annual amounts to monthly
+    monthly_expenses = annual_expenses / Decimal('12')
+    monthly_healthcare = annual_healthcare / Decimal('12')
+    monthly_social_security = social_security / Decimal('12')
+    monthly_pension = pension / Decimal('12')
+
+    # Simulate month by month
     portfolio = starting_portfolio
     total_withdrawals = Decimal('0')
     total_social_security = Decimal('0')
     total_pension = Decimal('0')
     total_investment_gains = Decimal('0')
-    current_expenses = annual_expenses
-    current_healthcare = annual_healthcare
+    current_monthly_expenses = monthly_expenses
+    current_monthly_healthcare = monthly_healthcare
     portfolio_depletion_age = None
 
-    for year in range(phase_duration_years):
-        current_age = start_age + year
+    for month in range(phase_duration_months):
+        current_age = start_age + (month // 12)
 
-        # Investment growth (annual compounding)
-        annual_gain = portfolio * annual_return_rate
-        total_investment_gains += annual_gain
-        portfolio += annual_gain
+        # Investment growth (monthly compounding)
+        monthly_gain = portfolio * monthly_return_rate
+        total_investment_gains += monthly_gain
+        portfolio += monthly_gain
 
         # Income
-        total_social_security += social_security
-        total_pension += pension
+        total_social_security += monthly_social_security
+        total_pension += monthly_pension
 
         # Calculate withdrawal needed
-        total_annual_costs = current_expenses + current_healthcare
-        annual_income = social_security + pension
-        withdrawal_needed = max(Decimal('0'), total_annual_costs - annual_income)
+        total_monthly_costs = current_monthly_expenses + current_monthly_healthcare
+        monthly_income = monthly_social_security + monthly_pension
+        withdrawal_needed = max(Decimal('0'), total_monthly_costs - monthly_income)
 
         # Make withdrawal
         if withdrawal_needed > portfolio:
@@ -346,9 +357,9 @@ def calculate_active_retirement_phase(data: dict) -> ActiveRetirementResults:
 
         total_withdrawals += withdrawal_needed
 
-        # Inflation adjustment for next year
-        current_expenses = current_expenses * (1 + annual_inflation_rate)
-        current_healthcare = current_healthcare * (1 + annual_inflation_rate)
+        # Inflation adjustment monthly
+        current_monthly_expenses = current_monthly_expenses * (1 + monthly_inflation_rate)
+        current_monthly_healthcare = current_monthly_healthcare * (1 + monthly_inflation_rate)
 
         if portfolio <= 0:
             break
@@ -396,48 +407,60 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
     desired_legacy = Decimal(str(data.get('desired_legacy') or 0))
 
     phase_duration_years = life_expectancy - start_age
+    phase_duration_months = phase_duration_years * 12
     annual_return_rate = expected_return / Decimal('100')
     annual_inflation_rate = inflation_rate / Decimal('100')
 
-    # Simulate year by year (conservative approach)
+    # Convert to monthly rates
+    monthly_return_rate = annual_return_rate / Decimal('12')
+    monthly_inflation_rate = annual_inflation_rate / Decimal('12')
+
+    # Convert annual amounts to monthly
+    monthly_basic_expenses = annual_basic_expenses / Decimal('12')
+    monthly_healthcare = annual_healthcare / Decimal('12')
+    monthly_ltc = ltc_annual / Decimal('12')
+    monthly_ltc_insurance = ltc_insurance / Decimal('12')
+    monthly_social_security = social_security / Decimal('12')
+
+    # Simulate month by month
     portfolio = starting_portfolio
     total_withdrawals = Decimal('0')
     total_ltc_costs = Decimal('0')
     total_ltc_insurance_paid = Decimal('0')
     total_social_security = Decimal('0')
-    current_basic_expenses = annual_basic_expenses
-    current_healthcare = annual_healthcare
-    current_ltc = ltc_annual
+    current_monthly_basic_expenses = monthly_basic_expenses
+    current_monthly_healthcare = monthly_healthcare
+    current_monthly_ltc = monthly_ltc
 
-    for year in range(phase_duration_years):
-        # Investment growth (annual compounding)
-        annual_gain = portfolio * annual_return_rate
-        portfolio += annual_gain
+    for month in range(phase_duration_months):
+        # Investment growth (monthly compounding)
+        monthly_gain = portfolio * monthly_return_rate
+        portfolio += monthly_gain
 
         # Income
-        total_social_security += social_security
+        total_social_security += monthly_social_security
 
         # Costs
-        total_annual_costs = current_basic_expenses + current_healthcare + current_ltc
-        total_ltc_costs += current_ltc
+        total_monthly_costs = current_monthly_basic_expenses + current_monthly_healthcare + current_monthly_ltc
+        total_ltc_costs += current_monthly_ltc
 
         # LTC insurance coverage
-        ltc_coverage_this_year = min(ltc_insurance, current_ltc)
-        total_ltc_insurance_paid += ltc_coverage_this_year
+        ltc_coverage_this_month = min(monthly_ltc_insurance, current_monthly_ltc)
+        total_ltc_insurance_paid += ltc_coverage_this_month
 
         # Net withdrawal needed
-        net_costs = total_annual_costs - ltc_coverage_this_year
-        withdrawal_needed = max(Decimal('0'), net_costs - social_security)
+        net_costs = total_monthly_costs - ltc_coverage_this_month
+        withdrawal_needed = max(Decimal('0'), net_costs - monthly_social_security)
 
         # Make withdrawal
         withdrawal_needed = min(withdrawal_needed, portfolio)
         portfolio -= withdrawal_needed
         total_withdrawals += withdrawal_needed
 
-        # Inflation adjustment for next year
-        current_basic_expenses = current_basic_expenses * (1 + annual_inflation_rate)
-        current_healthcare = current_healthcare * (1 + annual_inflation_rate)
-        current_ltc = current_ltc * (1 + annual_inflation_rate)
+        # Inflation adjustment monthly
+        current_monthly_basic_expenses = current_monthly_basic_expenses * (1 + monthly_inflation_rate)
+        current_monthly_healthcare = current_monthly_healthcare * (1 + monthly_inflation_rate)
+        current_monthly_ltc = current_monthly_ltc * (1 + monthly_inflation_rate)
 
         if portfolio <= 0:
             break
