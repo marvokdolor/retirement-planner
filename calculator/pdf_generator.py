@@ -35,11 +35,21 @@ import plotly.graph_objects as go
 
 def currency_format(value):
     """Format value as currency string."""
-    if value is None:
+    if value is None or value == '':
         return "$0"
+
+    # Handle string values (from saved scenarios)
+    if isinstance(value, str):
+        try:
+            value = float(value)
+        except (ValueError, TypeError):
+            return "$0"
+
+    # Format numeric values
     if isinstance(value, (int, float, Decimal)):
         return f"${value:,.0f}"
-    return str(value)
+
+    return "$0"
 
 
 def _generate_monte_carlo_chart_image(phase_data, phase_name="Accumulation"):
@@ -346,14 +356,6 @@ def generate_retirement_pdf(scenario):
     elements.append(Paragraph("Comprehensive Retirement Plan Analysis", styles['Heading3']))
     elements.append(Spacer(1, 0.5*inch))
 
-    # Generated date
-    generated_date = datetime.now().strftime("%B %d, %Y at %I:%M %p")
-    elements.append(Paragraph(f"Generated: {generated_date}", body_style))
-    elements.append(Spacer(1, 0.3*inch))
-
-    # Executive Summary
-    elements.append(Paragraph("Executive Summary", heading_style))
-
     # Calculate all phases to get results
     phase_results = {}
     scenario_data = scenario.data
@@ -371,37 +373,8 @@ def generate_retirement_pdf(scenario):
             print(f"Error calculating Phase 1: {e}", file=sys.stderr)
             pass
 
-    # Create summary table
-    summary_data = []
-    summary_data.append(['Metric', 'Value'])
-
-    if 'phase1' in phase_results:
-        summary_data.append([
-            'Future Value at Retirement',
-            currency_format(phase_results['phase1'].future_value)
-        ])
-        summary_data.append([
-            'Years to Retirement',
-            f"{phase_results['phase1'].years_to_retirement} years"
-        ])
-
-    summary_table = Table(summary_data, colWidths=[3.5*inch, 2.5*inch])
-    summary_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3b82f6')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('ALIGN', (1, 1), (1, -1), 'RIGHT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-    elements.append(summary_table)
-    elements.append(PageBreak())
-
     # Detailed Phase Results
-    elements.append(Paragraph("Detailed Phase Analysis", heading_style))
+    elements.append(Paragraph("Retirement Plan Details", heading_style))
     elements.append(Spacer(1, 0.2*inch))
 
     # Phase 1: Accumulation
@@ -557,7 +530,8 @@ def generate_retirement_pdf(scenario):
                 ['Phase End Age', f"{phase3_data.get('active_retirement_end_age', 'N/A')} years"],
                 ['Phase Duration', f"{result.phase_duration_years} years"],
                 ['Starting Portfolio', currency_format(phase3_data.get('starting_portfolio'))],
-                ['Annual Withdrawal', currency_format(phase3_data.get('annual_withdrawal'))],
+                ['Annual Expenses', currency_format(phase3_data.get('annual_expenses'))],
+                ['Annual Healthcare Costs', currency_format(phase3_data.get('annual_healthcare_costs'))],
                 ['', ''],  # Spacer row
                 ['Ending Portfolio Value', currency_format(result.ending_portfolio)],
             ]
@@ -627,7 +601,8 @@ def generate_retirement_pdf(scenario):
                 ['Life Expectancy', f"{phase4_data.get('life_expectancy', 'N/A')} years"],
                 ['Phase Duration', f"{result.phase_duration_years} years"],
                 ['Starting Portfolio', currency_format(phase4_data.get('starting_portfolio'))],
-                ['Annual Withdrawal', currency_format(phase4_data.get('annual_withdrawal'))],
+                ['Annual Basic Expenses', currency_format(phase4_data.get('annual_basic_expenses'))],
+                ['Annual Healthcare Costs', currency_format(phase4_data.get('annual_healthcare_costs'))],
                 ['', ''],  # Spacer row
                 ['Ending Portfolio Value', currency_format(result.ending_portfolio)],
                 ['Estate/Legacy', currency_format(result.ending_portfolio)],
@@ -671,43 +646,6 @@ def generate_retirement_pdf(scenario):
         except (KeyError, ValueError, TypeError) as e:
             import sys
             print(f"Error calculating Phase 4: {e}", file=sys.stderr)
-
-    # Assumptions Section
-    elements.append(PageBreak())
-    elements.append(Paragraph("Planning Assumptions", heading_style))
-    elements.append(Spacer(1, 0.1*inch))
-
-    assumptions_text = """
-    This retirement plan is based on the following key assumptions and inputs provided by you:
-    """
-    elements.append(Paragraph(assumptions_text, body_style))
-    elements.append(Spacer(1, 0.1*inch))
-
-    # Create assumptions table
-    # Use the same logic to handle both nested and flat data structures
-    assumptions_input_data = scenario_data.get('phase1', scenario_data)
-    if 'expected_return' in assumptions_input_data:
-        assumptions_data = [
-            ['Assumption', 'Value'],
-            ['Expected Annual Return', f"{assumptions_input_data.get('expected_return', 0)}%"],
-            ['Annual Salary Increase', f"{assumptions_input_data.get('annual_salary_increase', 0)}%"],
-            ['Return Volatility', f"{assumptions_input_data.get('return_volatility', 10)}%"],
-            ['Inflation Rate (assumed)', "3.0%"],
-        ]
-
-        assumptions_table = Table(assumptions_data, colWidths=[3.5*inch, 2.5*inch])
-        assumptions_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3b82f6')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('ALIGN', (1, 1), (1, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ]))
-        elements.append(assumptions_table)
 
     # Disclaimer
     elements.append(PageBreak())
