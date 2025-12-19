@@ -14,7 +14,7 @@
         <div class="text-sm text-gray-600 uppercase font-medium">Success Rate</div>
         <div class="text-4xl font-bold mt-2
             {% if results.success_rate >= 90 %}text-green-600{% elif results.success_rate >= 75 %}text-yellow-600{% else %}text-red-600{% endif %}">
-            {{ results.success_rate }}%
+            {{ results.success_rate|floatformat:0 }}%
         </div>
         <div class="text-xs text-gray-500 mt-2">
             Percentage of simulations where portfolio didn't run out of money
