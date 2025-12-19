@@ -515,10 +515,15 @@ def generate_retirement_pdf(scenario):
     phase2_data = scenario_data.get('phase2', scenario_data)
     if 'phase_start_age' in phase2_data:
         try:
+            # Use Phase 1 ending portfolio as Phase 2 starting portfolio
+            phase2_starting = phase2_data.get('starting_portfolio', 0)
+            if 'phase1' in phase_results:
+                phase2_starting = phase_results['phase1'].ending_portfolio
+
             phase2_calc_data = {
                 'phase_start_age': int(phase2_data['phase_start_age']),
                 'full_retirement_age': int(phase2_data['full_retirement_age']),
-                'starting_portfolio': phase2_data.get('starting_portfolio', 0),
+                'starting_portfolio': phase2_starting,
                 'monthly_contribution': phase2_data.get('monthly_contribution', 0),
                 'annual_withdrawal': phase2_data.get('annual_withdrawal', 0),
                 'part_time_income': phase2_data.get('part_time_income', 0),
@@ -533,10 +538,17 @@ def generate_retirement_pdf(scenario):
     phase3_data = scenario_data.get('phase3', scenario_data)
     if 'active_retirement_start_age' in phase3_data:
         try:
+            # Use Phase 2 ending portfolio as Phase 3 starting portfolio (or Phase 1 if Phase 2 skipped)
+            phase3_starting = phase3_data.get('starting_portfolio', 0)
+            if 'phase2' in phase_results:
+                phase3_starting = phase_results['phase2'].ending_portfolio
+            elif 'phase1' in phase_results:
+                phase3_starting = phase_results['phase1'].ending_portfolio
+
             phase3_calc_data = {
                 'active_retirement_start_age': int(phase3_data['active_retirement_start_age']),
                 'active_retirement_end_age': int(phase3_data['active_retirement_end_age']),
-                'starting_portfolio': phase3_data.get('starting_portfolio', 0),
+                'starting_portfolio': phase3_starting,
                 'annual_expenses': phase3_data.get('annual_expenses', 0),
                 'annual_healthcare_costs': phase3_data.get('annual_healthcare_costs', 0),
                 'expected_return': phase3_data.get('expected_return', 7),
@@ -551,10 +563,19 @@ def generate_retirement_pdf(scenario):
     phase4_data = scenario_data.get('phase4', scenario_data)
     if 'late_retirement_start_age' in phase4_data:
         try:
+            # Use Phase 3 ending portfolio as Phase 4 starting portfolio (or earlier phase if Phase 3 skipped)
+            phase4_starting = phase4_data.get('starting_portfolio', 0)
+            if 'phase3' in phase_results:
+                phase4_starting = phase_results['phase3'].ending_portfolio
+            elif 'phase2' in phase_results:
+                phase4_starting = phase_results['phase2'].ending_portfolio
+            elif 'phase1' in phase_results:
+                phase4_starting = phase_results['phase1'].ending_portfolio
+
             phase4_calc_data = {
                 'late_retirement_start_age': int(phase4_data['late_retirement_start_age']),
                 'life_expectancy': int(phase4_data['life_expectancy']),
-                'starting_portfolio': phase4_data.get('starting_portfolio', 0),
+                'starting_portfolio': phase4_starting,
                 'annual_basic_expenses': phase4_data.get('annual_basic_expenses', 0),
                 'annual_healthcare_costs': phase4_data.get('annual_healthcare_costs', 0),
                 'expected_return': phase4_data.get('expected_return', 7),
