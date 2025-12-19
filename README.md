@@ -52,14 +52,41 @@ python manage.py tailwind install
 ### Running Locally
 
 ```bash
-# Terminal 1 - Django
+# Terminal 1 - Django (automatically uses development settings)
 python manage.py runserver
 
-# Terminal 2 - Tailwind
+# Terminal 2 - Tailwind (only needed in development)
 python manage.py tailwind start
 ```
 
 Visit: http://127.0.0.1:8000/
+
+### Environment-Specific Settings
+
+This project uses separate settings files for different environments:
+
+-   **Development**: `retirement_planner/settings/development.py`
+    -   Includes Django Tailwind for CSS development
+    -   Debug Toolbar enabled
+    -   Browser auto-reload on file changes
+    -   More verbose logging
+    -   Default when running `manage.py`
+
+-   **Production**: `retirement_planner/settings/production.py`
+    -   Tailwind disabled (uses pre-compiled CSS)
+    -   Enhanced security (HSTS, secure cookies, XSS protection)
+    -   SMTP email backend
+    -   Less verbose logging
+    -   Used automatically in production (via wsgi.py)
+
+**To explicitly use a specific settings file:**
+```bash
+# Development
+python manage.py runserver --settings=retirement_planner.settings.development
+
+# Production
+python manage.py check --settings=retirement_planner.settings.production
+```
 
 ## Tech Stack
 
