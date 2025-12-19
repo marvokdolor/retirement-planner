@@ -499,11 +499,13 @@ def generate_retirement_pdf(scenario, phase_results):
     # Use pre-calculated results passed from the view
     scenario_data = scenario.data
 
-    # Extract phase data dictionaries (handles both nested and flat structures)
-    phase1_data = scenario_data.get('phase1', scenario_data if 'current_age' in scenario_data else {})
-    phase2_data = scenario_data.get('phase2', scenario_data if 'phase_start_age' in scenario_data else {})
-    phase3_data = scenario_data.get('phase3', scenario_data if 'active_retirement_start_age' in scenario_data else {})
-    phase4_data = scenario_data.get('phase4', scenario_data if 'late_retirement_start_age' in scenario_data else {})
+    # Extract phase data dictionaries
+    # Scenario data is stored flat (all fields at top level), not nested by phase
+    # So we just use scenario_data directly for all phases
+    phase1_data = scenario_data
+    phase2_data = scenario_data
+    phase3_data = scenario_data
+    phase4_data = scenario_data
 
     # Add generated date in local time
     local_time = timezone.localtime(timezone.now())
