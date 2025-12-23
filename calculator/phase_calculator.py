@@ -432,6 +432,8 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
     current_monthly_healthcare = monthly_healthcare
     current_monthly_ltc = monthly_ltc
 
+    portfolio_depleted_early = False  # Track if portfolio ran out before phase end
+
     for month in range(phase_duration_months):
         # Investment growth (monthly compounding)
         monthly_gain = portfolio * monthly_return_rate
@@ -463,12 +465,17 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
         current_monthly_ltc = current_monthly_ltc * (1 + monthly_inflation_rate)
 
         if portfolio <= 0:
+            portfolio_depleted_early = True  # Mark that we ran out of money
             break
 
     ending_portfolio = max(Decimal('0'), portfolio)
     net_ltc_out_of_pocket = total_ltc_costs - total_ltc_insurance_paid
     legacy_amount = ending_portfolio
-    portfolio_sufficient = ending_portfolio >= desired_legacy
+
+    # Portfolio is sufficient ONLY if:
+    # 1. We made it through the entire phase without running out of money
+    # 2. AND the ending portfolio meets or exceeds the desired legacy goal
+    portfolio_sufficient = (not portfolio_depleted_early) and (ending_portfolio >= desired_legacy)
 
     return LateRetirementResults(
         phase_duration_years=phase_duration_years,
