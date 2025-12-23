@@ -25,7 +25,7 @@ class WhatIfComparisonViewTests(TestCase):
         self.scenario_data = {
             'phase1': {
                 'current_age': 30,
-                'retirement_age': 65,
+                'retirement_start_age': 65,
                 'current_savings': 50000,
                 'monthly_contribution': 1000,
                 'expected_return': 7.0,
@@ -129,7 +129,7 @@ class WhatIfCalculateHTMXTests(TestCase):
         self.scenario_data = {
             'phase1': {
                 'current_age': 30,
-                'retirement_age': 65,
+                'retirement_start_age': 65,
                 'current_savings': 50000,
                 'monthly_contribution': 1000,
                 'expected_return': 7.0,
@@ -149,7 +149,7 @@ class WhatIfCalculateHTMXTests(TestCase):
         response = self.client.post(url, {
             'base_scenario_id': self.scenario.id,
             'current_age': 30,
-            'retirement_age': 67,  # Changed from 65
+            'retirement_start_age': 67,  # Changed from 65
         })
 
         # Should redirect to login
@@ -165,7 +165,7 @@ class WhatIfCalculateHTMXTests(TestCase):
             'base_scenario_id': self.scenario.id,
             'phase': 'phase1',
             'current_age': 30,
-            'retirement_age': 67,  # +2 years
+            'retirement_start_age': 67,  # +2 years
             'current_savings': 50000,
             'monthly_contribution': 1000,
             'expected_return': 7.0,
@@ -188,7 +188,7 @@ class WhatIfCalculateHTMXTests(TestCase):
             'base_scenario_id': self.scenario.id,
             'phase': 'phase1',
             'current_age': 30,
-            'retirement_age': 65,
+            'retirement_start_age': 65,
             'current_savings': 50000,
             'monthly_contribution': 1500,  # +$500
             'expected_return': 7.0,
@@ -206,7 +206,7 @@ class WhatIfCalculateHTMXTests(TestCase):
             'base_scenario_id': self.scenario.id,
             'phase': 'phase1',
             'current_age': 30,
-            'retirement_age': 67,
+            'retirement_start_age': 67,
             'current_savings': 50000,
             'monthly_contribution': 1000,
             'expected_return': 7.0,
@@ -228,7 +228,7 @@ class WhatIfCalculateHTMXTests(TestCase):
             'base_scenario_id': self.scenario.id,
             'phase': 'phase1',
             'current_age': 30,
-            'retirement_age': 25,  # Invalid: before current age
+            'retirement_start_age': 25,  # Invalid: before current age
             'current_savings': 50000,
             'monthly_contribution': 1000,
             'expected_return': 7.0,
@@ -258,7 +258,7 @@ class WhatIfComparisonIntegrationTests(TestCase):
             data={
                 'phase1': {
                     'current_age': 30,
-                    'retirement_age': 65,
+                    'retirement_start_age': 65,
                     'current_savings': 100000,
                     'monthly_contribution': 2000,
                     'expected_return': 7.0,
@@ -282,7 +282,7 @@ class WhatIfComparisonIntegrationTests(TestCase):
             'base_scenario_id': self.scenario.id,
             'phase': 'phase1',
             'current_age': 30,
-            'retirement_age': 62,  # Changed from 65 to 62
+            'retirement_start_age': 62,  # Changed from 65 to 62
             'current_savings': 100000,
             'monthly_contribution': 2000,
             'expected_return': 7.0,
