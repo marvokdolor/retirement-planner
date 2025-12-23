@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'retirement_planner.middleware.SecurityHeadersMiddleware',  # Custom security headers (CSP)
     'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -190,39 +189,12 @@ Q_CLUSTER = {
     'orm': 'default'  # Use default database for task queue
 }
 
-# Security Headers
-# Content Security Policy (CSP) - Protects against XSS attacks
-# Allow scripts and styles from self, plus external CDNs for Alpine.js, Plotly, and Tailwind
-SECURE_CONTENT_SECURITY_POLICY = {
-    'default-src': ["'self'"],
-    'script-src': [
-        "'self'",
-        'https://unpkg.com',  # HTMX
-        'https://cdn.jsdelivr.net',  # Alpine.js
-        'https://cdn.plot.ly',  # Plotly
-        "'unsafe-inline'",  # Required for inline scripts (HTMX, Alpine.js attributes)
-    ],
-    'style-src': [
-        "'self'",
-        'https://cdn.jsdelivr.net',  # Tailwind CSS (if using CDN)
-        "'unsafe-inline'",  # Required for inline styles (Tailwind, Plotly)
-    ],
-    'img-src': ["'self'", 'data:', 'https:'],  # Allow data URIs and HTTPS images
-    'font-src': ["'self'", 'https:', 'data:'],
-    'connect-src': ["'self'"],  # HTMX AJAX requests
-    'frame-ancestors': ["'none'"],  # Prevent clickjacking
-    'base-uri': ["'self'"],
-    'form-action': ["'self'"],
-}
-
+# Basic Security Headers (kept for baseline protection)
 # X-Frame-Options - Already set by Django's XFrameOptionsMiddleware
 X_FRAME_OPTIONS = 'DENY'
 
 # X-Content-Type-Options - Prevent MIME type sniffing
 SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# X-XSS-Protection (legacy, but still helpful for older browsers)
-SECURE_BROWSER_XSS_FILTER = True
 
 # Logging Configuration
 LOGGING = {
