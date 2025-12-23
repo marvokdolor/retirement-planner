@@ -20,7 +20,10 @@ def send_scenario_email(scenario_id, user_email):
     """
     try:
         scenario = Scenario.objects.get(pk=scenario_id)
+    except Scenario.DoesNotExist:
+        return f"Error: Scenario {scenario_id} not found (may have been deleted)"
 
+    try:
         # Calculate results
         results = calculate_accumulation_phase(scenario.data)
 
