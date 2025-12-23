@@ -223,6 +223,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase2"
                                            name="{{ phased_retirement_form.starting_portfolio.name }}"
+                                           value="{{ phased_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ phased_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'800,000' }}">
@@ -239,6 +240,7 @@
                                     <input type="number"
                                            id="id_phase_start_age_phase2"
                                            name="{{ phased_retirement_form.phase_start_age.name }}"
+                                           value="{{ phased_retirement_form.phase_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                            min="50"
                                            max="100"
@@ -335,6 +337,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase3"
                                            name="{{ active_retirement_form.starting_portfolio.name }}"
+                                           value="{{ active_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ active_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'1,200,000' }}">
@@ -351,6 +354,7 @@
                                     <input type="number"
                                            id="id_active_retirement_start_age_phase3"
                                            name="{{ active_retirement_form.active_retirement_start_age.name }}"
+                                           value="{{ active_retirement_form.active_retirement_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                            min="50"
                                            max="100"
@@ -447,6 +451,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase4"
                                            name="{{ late_retirement_form.starting_portfolio.name }}"
+                                           value="{{ late_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ late_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'600,000' }}">
@@ -463,6 +468,7 @@
                                     <input type="number"
                                            id="id_late_retirement_start_age_phase4"
                                            name="{{ late_retirement_form.late_retirement_start_age.name }}"
+                                           value="{{ late_retirement_form.late_retirement_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                            min="70"
                                            max="100"
@@ -545,6 +551,7 @@
                                    required>
                         </div>
                         <button type="submit"
+                                hx-disabled-elt="this"
                                 class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap flex items-center gap-2">
                             <span id="save-loading" class="htmx-indicator">
                                 <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -756,6 +763,14 @@ function stripCommas(value) {
 
 // Keyboard navigation for tabs
 document.addEventListener('DOMContentLoaded', function() {
+    {% if loaded_scenario %}
+    // Clear localStorage when loading a saved scenario to prevent FormPersistence
+    // from overriding Django's initial form values
+    if (window.FormPersistence) {
+        window.FormPersistence.clearAllFormData();
+    }
+    {% endif %}
+
     // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
 
