@@ -36,6 +36,7 @@ urlpatterns = [
     path('scenarios/new/', views.ScenarioCreateView.as_view(), name='scenario_create'),
     path('scenarios/<int:pk>/edit/', views.ScenarioUpdateView.as_view(), name='scenario_update'),
     path('scenarios/<int:pk>/delete/', views.ScenarioDeleteView.as_view(), name='scenario_delete'),
+    path('scenarios/<int:scenario_id>/email/', views.email_scenario, name='email_scenario'),
 
     # Scenario comparison
     path('scenarios/compare/', views.compare_scenarios, name='scenario_compare'),
