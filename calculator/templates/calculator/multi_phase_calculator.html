@@ -668,6 +668,12 @@ input:focus, select:focus, textarea:focus {
 
 <script>
 function switchTab(phase) {
+    // Clear any save success/error messages
+    const saveMessage = document.getElementById('save-message');
+    if (saveMessage) {
+        saveMessage.innerHTML = '';
+    }
+
     // Hide all tab contents with fade effect
     document.querySelectorAll('.tab-content').forEach(content => {
         content.style.opacity = '0';
