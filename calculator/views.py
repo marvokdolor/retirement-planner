@@ -96,19 +96,31 @@ def multi_phase_calculator(request, scenario_id=None):
         calculator/multi_phase_calculator.html
     """
     # If scenario_id is provided, load the scenario data
-    initial_data = {}
+    # Initialize phase-specific data dictionaries
+    phase1_initial = {}
+    phase2_initial = {}
+    phase3_initial = {}
+    phase4_initial = {}
     scenario = None
+
     if scenario_id:
         # Only authenticated users can load scenarios
         if request.user.is_authenticated:
             scenario = get_object_or_404(Scenario, pk=scenario_id, user=request.user)
-            initial_data = scenario.data
+            scenario_data = scenario.data
 
-    # Initialize all forms (with scenario data if provided)
-    accumulation_form = AccumulationPhaseForm(initial=initial_data)
-    phased_retirement_form = PhasedRetirementForm(initial=initial_data)
-    active_retirement_form = ActiveRetirementForm(initial=initial_data)
-    late_retirement_form = LateRetirementForm(initial=initial_data)
+            # Extract phase data from nested structure (scenarios saved after Dec 23, 2025)
+            # Old flat-format scenarios will result in empty forms - user must re-save
+            phase1_initial = scenario_data.get('phase1', {})
+            phase2_initial = scenario_data.get('phase2', {})
+            phase3_initial = scenario_data.get('phase3', {})
+            phase4_initial = scenario_data.get('phase4', {})
+
+    # Initialize all forms with phase-specific data
+    accumulation_form = AccumulationPhaseForm(initial=phase1_initial)
+    phased_retirement_form = PhasedRetirementForm(initial=phase2_initial)
+    active_retirement_form = ActiveRetirementForm(initial=phase3_initial)
+    late_retirement_form = LateRetirementForm(initial=phase4_initial)
 
     return render(request, 'calculator/multi_phase_calculator.html', {
         'accumulation_form': accumulation_form,
@@ -204,8 +216,12 @@ def compare_scenarios(request):
 
             # Calculate results for both scenarios
             try:
-                result1 = calculate_accumulation_phase(scenario1.data)
-                result2 = calculate_accumulation_phase(scenario2.data)
+                # Extract phase1 data from nested structure
+                scenario1_phase1 = scenario1.data.get('phase1', {})
+                scenario2_phase1 = scenario2.data.get('phase1', {})
+
+                result1 = calculate_accumulation_phase(scenario1_phase1)
+                result2 = calculate_accumulation_phase(scenario2_phase1)
 
                 # Determine which scenario performs better (higher future value)
                 if result1.future_value > result2.future_value:

@@ -25,7 +25,9 @@ def send_scenario_email(scenario_id, user_email):
 
     try:
         # Calculate results
-        results = calculate_accumulation_phase(scenario.data)
+        # Extract phase1 data from nested structure
+        phase1_data = scenario.data.get('phase1', {})
+        results = calculate_accumulation_phase(phase1_data)
 
         # Format email body
         email_body = f"""
