@@ -115,6 +115,7 @@ class LateRetirementResults:
     total_ltc_costs: Decimal
     total_ltc_insurance_paid: Decimal
     total_social_security: Decimal
+    total_investment_gains: Decimal
     net_ltc_out_of_pocket: Decimal
     legacy_amount: Decimal
     portfolio_sufficient: bool
@@ -428,6 +429,7 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
     total_ltc_costs = Decimal('0')
     total_ltc_insurance_paid = Decimal('0')
     total_social_security = Decimal('0')
+    total_investment_gains = Decimal('0')
     current_monthly_basic_expenses = monthly_basic_expenses
     current_monthly_healthcare = monthly_healthcare
     current_monthly_ltc = monthly_ltc
@@ -437,6 +439,7 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
     for month in range(phase_duration_months):
         # Investment growth (monthly compounding)
         monthly_gain = portfolio * monthly_return_rate
+        total_investment_gains += monthly_gain
         portfolio += monthly_gain
 
         # Income
@@ -485,6 +488,7 @@ def calculate_late_retirement_phase(data: dict) -> LateRetirementResults:
         total_ltc_costs=total_ltc_costs,
         total_ltc_insurance_paid=total_ltc_insurance_paid,
         total_social_security=total_social_security,
+        total_investment_gains=total_investment_gains,
         net_ltc_out_of_pocket=net_ltc_out_of_pocket,
         legacy_amount=legacy_amount,
         portfolio_sufficient=portfolio_sufficient

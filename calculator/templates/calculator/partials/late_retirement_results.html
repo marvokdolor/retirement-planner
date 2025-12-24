@@ -137,6 +137,10 @@
                 <span class="font-medium">{{ results.starting_portfolio|currency }}</span>
             </div>
             <div class="flex justify-between">
+                <span>Investment Gains:</span>
+                <span class="font-medium text-green-600">+ {{ results.total_investment_gains|currency }}</span>
+            </div>
+            <div class="flex justify-between">
                 <span>Portfolio Withdrawals:</span>
                 <span class="font-medium text-orange-600">- {{ results.total_withdrawals|currency }}</span>
             </div>
