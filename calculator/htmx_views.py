@@ -205,11 +205,30 @@ def save_scenario(request):
             scenario.user = request.user
             action = "saved"
 
-        # Capture all form data as JSON (excluding csrf_token and scenario_name)
-        data = {}
+        # Capture all form data organized by phase
+        data = {
+            'phase1': {},
+            'phase2': {},
+            'phase3': {},
+            'phase4': {}
+        }
+
+        # Parse phase-prefixed parameters from JavaScript
         for key, value in request.POST.items():
             if key not in ['csrfmiddlewaretoken', 'name']:
-                data[key] = value
+                # Check if key has phase prefix
+                if key.startswith('phase1_'):
+                    field_name = key[7:]  # Remove 'phase1_' prefix
+                    data['phase1'][field_name] = value
+                elif key.startswith('phase2_'):
+                    field_name = key[7:]  # Remove 'phase2_' prefix
+                    data['phase2'][field_name] = value
+                elif key.startswith('phase3_'):
+                    field_name = key[7:]  # Remove 'phase3_' prefix
+                    data['phase3'][field_name] = value
+                elif key.startswith('phase4_'):
+                    field_name = key[7:]  # Remove 'phase4_' prefix
+                    data['phase4'][field_name] = value
 
         scenario.data = data
         scenario.save()

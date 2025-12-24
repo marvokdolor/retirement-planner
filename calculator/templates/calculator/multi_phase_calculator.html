@@ -857,16 +857,67 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Capture all form data when saving scenario
 document.getElementById('save-scenario-form').addEventListener('htmx:configRequest', function(event) {
-    // Get all input, select, and textarea elements from all phase forms
-    const allInputs = document.querySelectorAll('#content-accumulation input, #content-accumulation select, ' +
-                                                 '#content-phased-retirement input, #content-phased-retirement select, ' +
-                                                 '#content-active-retirement input, #content-active-retirement select, ' +
-                                                 '#content-late-retirement input, #content-late-retirement select');
+    // Phase 1: Accumulation
+    const phase1Inputs = document.querySelectorAll('#content-accumulation input, #content-accumulation select');
+    phase1Inputs.forEach(input => {
+        if (input.name && input.value && input.id && input.id.indexOf('_phase') === -1) {
+            event.detail.parameters['phase1_' + input.name] = input.value;
+        }
+    });
 
-    // Add each input value to the request
-    allInputs.forEach(input => {
-        if (input.name && input.value) {
-            event.detail.parameters[input.name] = input.value;
+    // Phase 2: Phased Retirement - get values from OOB-swapped inputs
+    const phase2StartPortfolio = document.getElementById('id_starting_portfolio_phase2');
+    const phase2StartAge = document.getElementById('id_phase_start_age_phase2');
+    const phase2Inputs = document.querySelectorAll('#content-phased-retirement input, #content-phased-retirement select');
+
+    // Add starting portfolio from OOB swap if it exists
+    if (phase2StartPortfolio && phase2StartPortfolio.value) {
+        event.detail.parameters['phase2_starting_portfolio'] = phase2StartPortfolio.value;
+    }
+    if (phase2StartAge && phase2StartAge.value) {
+        event.detail.parameters['phase2_phase_start_age'] = phase2StartAge.value;
+    }
+
+    // Add other Phase 2 inputs (but skip the OOB-swapped ones we already added)
+    phase2Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase2' && input.id !== 'id_phase_start_age_phase2') {
+            event.detail.parameters['phase2_' + input.name] = input.value;
+        }
+    });
+
+    // Phase 3: Active Retirement - get values from OOB-swapped inputs
+    const phase3StartPortfolio = document.getElementById('id_starting_portfolio_phase3');
+    const phase3StartAge = document.getElementById('id_active_retirement_start_age_phase3');
+    const phase3Inputs = document.querySelectorAll('#content-active-retirement input, #content-active-retirement select');
+
+    if (phase3StartPortfolio && phase3StartPortfolio.value) {
+        event.detail.parameters['phase3_starting_portfolio'] = phase3StartPortfolio.value;
+    }
+    if (phase3StartAge && phase3StartAge.value) {
+        event.detail.parameters['phase3_active_retirement_start_age'] = phase3StartAge.value;
+    }
+
+    phase3Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase3' && input.id !== 'id_active_retirement_start_age_phase3') {
+            event.detail.parameters['phase3_' + input.name] = input.value;
+        }
+    });
+
+    // Phase 4: Late Retirement - get values from OOB-swapped inputs
+    const phase4StartPortfolio = document.getElementById('id_starting_portfolio_phase4');
+    const phase4StartAge = document.getElementById('id_late_retirement_start_age_phase4');
+    const phase4Inputs = document.querySelectorAll('#content-late-retirement input, #content-late-retirement select');
+
+    if (phase4StartPortfolio && phase4StartPortfolio.value) {
+        event.detail.parameters['phase4_starting_portfolio'] = phase4StartPortfolio.value;
+    }
+    if (phase4StartAge && phase4StartAge.value) {
+        event.detail.parameters['phase4_late_retirement_start_age'] = phase4StartAge.value;
+    }
+
+    phase4Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase4' && input.id !== 'id_late_retirement_start_age_phase4') {
+            event.detail.parameters['phase4_' + input.name] = input.value;
         }
     });
 });
