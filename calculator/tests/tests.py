@@ -3,15 +3,16 @@ from django.urls import reverse
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
 from decimal import Decimal
-from .models import Scenario
-from .calculator import calculate_retirement_savings
-from .phase_calculator import (
+from calculator.models import Scenario
+from calculator.calculator import calculate_retirement_savings
+from calculator.forms import CustomUserCreationForm, RetirementCalculatorForm
+from calculator.phase_calculator import (
     calculate_accumulation_phase,
     calculate_phased_retirement_phase,
     calculate_active_retirement_phase,
     calculate_late_retirement_phase
 )
-from .admin import ScenarioAdmin
+from calculator.admin import ScenarioAdmin
 
 
 class ScenarioModelTests(TestCase):
@@ -592,7 +593,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_with_valid_data(self):
         """Test form with all valid data."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 30,
@@ -607,7 +607,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_unrealistic_return_rate(self):
         """Test that returns above 15% are rejected."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 30,
@@ -624,7 +623,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_excessive_monthly_contribution(self):
         """Test that monthly contributions over $10,000 are rejected."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 25,
@@ -640,7 +638,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_high_variance_warning(self):
         """Test that variance above 10% triggers validation error."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 30,
@@ -657,7 +654,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_retirement_age_less_than_current_age(self):
         """Test that retirement age must be greater than current age."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 65,
@@ -673,7 +669,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_retirement_age_equals_current_age(self):
         """Test that retirement age equal to current age is rejected."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 65,
@@ -689,7 +684,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_less_than_five_years_to_retirement(self):
         """Test that less than 5 years to retirement is rejected."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 62,
@@ -705,7 +699,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_no_savings_or_contributions(self):
         """Test that user must have either savings or contributions."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 25,
@@ -721,7 +714,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_variance_default_value(self):
         """Test that variance defaults to 2.0 when not provided."""
-        from .forms import RetirementCalculatorForm
 
         form = RetirementCalculatorForm(data={
             'current_age': 30,
@@ -737,7 +729,6 @@ class RetirementCalculatorFormTests(TestCase):
 
     def test_form_age_boundaries(self):
         """Test age validation boundaries."""
-        from .forms import RetirementCalculatorForm
 
         # Test minimum age (18)
         form = RetirementCalculatorForm(data={
@@ -768,7 +759,6 @@ class CustomUserCreationFormTests(TestCase):
 
     def test_form_with_email(self):
         """Test that form accepts valid email."""
-        from .forms import CustomUserCreationForm
 
         form = CustomUserCreationForm(data={
             'username': 'newuser',
@@ -781,7 +771,6 @@ class CustomUserCreationFormTests(TestCase):
 
     def test_form_saves_email_to_user(self):
         """Test that email is saved to user model."""
-        from .forms import CustomUserCreationForm
 
         form = CustomUserCreationForm(data={
             'username': 'emailuser',
