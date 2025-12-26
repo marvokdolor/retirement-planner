@@ -6,7 +6,13 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Saved Scenarios</h1>
+       <!-- Hide JSON Object entry for a New Scenario for now.
         <a href="{% url 'calculator:scenario_create' %}"
+           class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            + New Scenario
+        </a> 
+        -->
+         <a href="{% url 'calculator:multi_phase_calculator' %}"
            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
             + New Scenario
         </a>
@@ -47,6 +53,12 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{% url 'calculator:load_scenario' scenario.pk %}"
                                class="text-green-600 hover:text-green-900 mr-4">Load</a>
+                            <a href="{% url 'calculator:what_if_comparison' scenario.pk %}"
+                               class="text-purple-600 hover:text-purple-900 mr-4"
+                               title="What-If Analysis">What-If</a>
+                            <!--<a href="{% url 'calculator:generate_pdf_report' scenario.pk %}"
+                               class="text-blue-600 hover:text-blue-900 mr-4"
+                               title="Download PDF Report">PDF</a>-->
                             <a href="{% url 'calculator:scenario_delete' scenario.pk %}"
                                class="text-red-600 hover:text-red-900">Delete</a>
                         </td>

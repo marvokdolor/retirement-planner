@@ -235,6 +235,30 @@ class PhasedRetirementForm(BaseCalculatorForm):
         widget=forms.NumberInput(attrs={'placeholder': 'e.g., 60', 'step': '0.01'})
     )
 
+    return_volatility = forms.DecimalField(
+        label='Return Volatility Range (±%)',
+        max_digits=5,
+        decimal_places=2,
+        min_value=0,
+        max_value=50,
+        required=False,
+        initial=10.0,
+        help_text='Range of returns above/below expected (Conservative: 5%, Moderate: 10%, Aggressive: 15-20%)',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 10.0', 'step': '0.1'})
+    )
+
+    inflation_rate = forms.DecimalField(
+        label='Expected Inflation Rate (%)',
+        max_digits=5,
+        decimal_places=2,
+        min_value=0,
+        max_value=20,
+        required=False,
+        initial=3.0,
+        help_text='Historical average: 2-3%',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 3.0', 'step': '0.1'})
+    )
+
     def clean(self):
         cleaned_data = super().clean()
         phase_start_age = cleaned_data.get('phase_start_age')

@@ -62,6 +62,7 @@ def run_accumulation_monte_carlo(
     contribution_growth_rate = annual_contribution_increase / 100
 
     # Convert to monthly (assuming geometric Brownian motion)
+    # Both Monte Carlo and deterministic calculations use monthly compounding
     monthly_rate = annual_rate / 12
     monthly_std = annual_std / np.sqrt(12)
 
@@ -138,6 +139,8 @@ def run_withdrawal_monte_carlo(
     """
     Run Monte Carlo simulation for withdrawal/retirement phase.
 
+    Uses MONTHLY compounding to match the deterministic calculation approach.
+
     Args:
         starting_portfolio: Initial portfolio value
         annual_withdrawal: Annual withdrawal amount (inflation-adjusted)
@@ -184,8 +187,11 @@ def run_withdrawal_monte_carlo(
             # Generate random monthly return
             random_return = np.random.normal(monthly_rate, monthly_std)
 
-            # Apply return and subtract withdrawal
-            balance = balance * (1 + random_return) - current_withdrawal
+            # Apply return FIRST (matching deterministic approach)
+            balance = balance * (1 + random_return)
+
+            # THEN subtract withdrawal
+            balance = balance - current_withdrawal
 
             # Check if depleted
             if balance <= 0:

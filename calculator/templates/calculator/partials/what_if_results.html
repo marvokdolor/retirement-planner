@@ -1,0 +1,162 @@
+{% load calculator_tags %}
+
+<div class="bg-white rounded-lg shadow-lg p-6 border-2 border-green-500">
+    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+        <svg class="w-8 h-8 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        Comparison Results
+    </h3>
+
+    <div class="space-y-4">
+
+    {% if phase == 'phase1' %}
+    {# Accumulation Phase Results #}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Base Scenario Results -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="font-semibold text-gray-700 mb-3">Original Scenario</h4>
+            {% if base_results %}
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Future Value:</span>
+                    <span class="font-bold text-gray-900">{{ base_results.future_value|currency }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Contributions:</span>
+                    <span class="font-medium text-gray-700">{{ base_results.total_personal_contributions|add:base_results.total_employer_contributions|currency }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Gains:</span>
+                    <span class="font-medium text-gray-700">{{ base_results.investment_gains|currency }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-gray-500 italic">No base scenario data</p>
+            {% endif %}
+        </div>
+
+        <!-- What-If Results -->
+        <div class="bg-blue-50 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-900 mb-3">What-If Scenario</h4>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-blue-700">Future Value:</span>
+                    <span class="font-bold text-blue-900">{{ what_if_results.future_value|currency }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-blue-700">Total Contributions:</span>
+                    <span class="font-medium text-blue-800">{{ what_if_results.total_personal_contributions|add:what_if_results.total_employer_contributions|currency }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-blue-700">Total Gains:</span>
+                    <span class="font-medium text-blue-800">{{ what_if_results.investment_gains|currency }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delta/Difference -->
+    {% if deltas %}
+    <div class="mt-6 pt-6 border-t border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Impact of Changes</h4>
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Future Value Difference:</span>
+                <span class="font-bold {% if deltas.future_value >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if deltas.future_value >= 0 %}+{% endif %}{{ deltas.future_value|currency }}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Contribution Difference:</span>
+                <span class="font-medium {% if deltas.total_contributions >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if deltas.total_contributions >= 0 %}+{% endif %}{{ deltas.total_contributions|currency }}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Gains Difference:</span>
+                <span class="font-medium {% if deltas.total_gains >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if deltas.total_gains >= 0 %}+{% endif %}{{ deltas.total_gains|currency }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% elif phase in 'phase2 phase3 phase4' %}
+    {# Retirement Phase Results #}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Base Scenario Results -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="font-semibold text-gray-700 mb-3">Original Scenario</h4>
+            {% if base_results %}
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Ending Portfolio:</span>
+                    <span class="font-bold {% if base_results.ending_portfolio > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                        {{ base_results.ending_portfolio|currency }}
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Withdrawals:</span>
+                    <span class="font-medium text-gray-700">{{ base_results.total_withdrawals|currency }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-gray-500 italic">No base scenario data</p>
+            {% endif %}
+        </div>
+
+        <!-- What-If Results -->
+        <div class="bg-blue-50 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-900 mb-3">What-If Scenario</h4>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-blue-700">Ending Portfolio:</span>
+                    <span class="font-bold {% if what_if_results.ending_portfolio > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                        {{ what_if_results.ending_portfolio|currency }}
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-blue-700">Total Withdrawals:</span>
+                    <span class="font-medium text-blue-800">{{ what_if_results.total_withdrawals|currency }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delta/Difference -->
+    {% if deltas %}
+    <div class="mt-6 pt-6 border-t border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Impact of Changes</h4>
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Ending Portfolio Difference:</span>
+                <span class="font-bold {% if deltas.ending_portfolio >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if deltas.ending_portfolio >= 0 %}+{% endif %}{{ deltas.ending_portfolio|currency }}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Withdrawal Difference:</span>
+                <span class="font-medium {% if deltas.total_withdrawals <= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if deltas.total_withdrawals >= 0 %}+{% endif %}{{ deltas.total_withdrawals|currency }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Success message if improvement -->
+        {% if deltas.ending_portfolio > 0 %}
+        <div class="mt-4 bg-green-100 border border-green-300 rounded p-3 text-sm text-green-800">
+            <strong>✓ Improved Outcome:</strong> This adjustment leaves you with {{ deltas.ending_portfolio|currency }} more at the end of this phase.
+        </div>
+        {% elif deltas.ending_portfolio < 0 %}
+        <div class="mt-4 bg-red-100 border border-red-300 rounded p-3 text-sm text-red-800">
+            <strong>⚠️ Reduced Outcome:</strong> This adjustment leaves you with {{ deltas.ending_portfolio|currency }} less at the end of this phase.
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% endif %}
+    </div>
+</div>

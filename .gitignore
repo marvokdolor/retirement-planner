@@ -36,8 +36,9 @@ media/
 staticfiles/
 static/
 /static/
-# BUT allow compiled Tailwind CSS for production
+# BUT allow compiled Tailwind CSS and images for production
 !theme/static/css/dist/styles.css
+!theme/static/images/
 
 # Django migrations (optional - some teams commit these)
 # */migrations/*.py

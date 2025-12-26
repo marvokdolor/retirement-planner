@@ -4,7 +4,7 @@
 {% block title %}Multi-Phase Retirement Calculator{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12" data-user-id="{% if user.is_authenticated %}{{ user.id }}{% else %}anonymous{% endif %}">
     <div class="container mx-auto px-4">
         {# Header #}
         <div class="text-center mb-8">
@@ -126,6 +126,7 @@
 
                         <form method="post"
                               id="accumulation-form"
+                              data-persist="phase1"
                               hx-post="{% url 'calculator:calculate_accumulation' %}"
                               hx-target="#accumulation-results"
                               hx-indicator="#accumulation-loading"
@@ -203,6 +204,7 @@
 
                         <form method="post"
                               id="phased-retirement-form"
+                              data-persist="phase2"
                               hx-post="{% url 'calculator:calculate_phased_retirement' %}"
                               hx-target="#phased-retirement-results"
                               hx-indicator="#phased-retirement-loading"
@@ -221,6 +223,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase2"
                                            name="{{ phased_retirement_form.starting_portfolio.name }}"
+                                           value="{{ phased_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ phased_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'800,000' }}">
@@ -237,6 +240,7 @@
                                     <input type="number"
                                            id="id_phase_start_age_phase2"
                                            name="{{ phased_retirement_form.phase_start_age.name }}"
+                                           value="{{ phased_retirement_form.phase_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                            min="50"
                                            max="100"
@@ -314,6 +318,7 @@
 
                         <form method="post"
                               id="active-retirement-form"
+                              data-persist="phase3"
                               hx-post="{% url 'calculator:calculate_active_retirement' %}"
                               hx-target="#active-retirement-results"
                               hx-indicator="#active-retirement-loading"
@@ -332,6 +337,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase3"
                                            name="{{ active_retirement_form.starting_portfolio.name }}"
+                                           value="{{ active_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ active_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'1,200,000' }}">
@@ -348,6 +354,7 @@
                                     <input type="number"
                                            id="id_active_retirement_start_age_phase3"
                                            name="{{ active_retirement_form.active_retirement_start_age.name }}"
+                                           value="{{ active_retirement_form.active_retirement_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                            min="50"
                                            max="100"
@@ -425,6 +432,7 @@
 
                         <form method="post"
                               id="late-retirement-form"
+                              data-persist="phase4"
                               hx-post="{% url 'calculator:calculate_late_retirement' %}"
                               hx-target="#late-retirement-results"
                               hx-indicator="#late-retirement-loading"
@@ -443,6 +451,7 @@
                                     <input type="number"
                                            id="id_starting_portfolio_phase4"
                                            name="{{ late_retirement_form.starting_portfolio.name }}"
+                                           value="{{ late_retirement_form.starting_portfolio.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                            step="1"
                                            placeholder="{{ late_retirement_form.starting_portfolio.field.widget.attrs.placeholder|default:'600,000' }}">
@@ -459,6 +468,7 @@
                                     <input type="number"
                                            id="id_late_retirement_start_age_phase4"
                                            name="{{ late_retirement_form.late_retirement_start_age.name }}"
+                                           value="{{ late_retirement_form.late_retirement_start_age.value|default:'' }}"
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                            min="70"
                                            max="100"
@@ -541,6 +551,7 @@
                                    required>
                         </div>
                         <button type="submit"
+                                hx-disabled-elt="this"
                                 class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold whitespace-nowrap flex items-center gap-2">
                             <span id="save-loading" class="htmx-indicator">
                                 <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -551,6 +562,13 @@
                             <span>Save Scenario</span>
                         </button>
                     </form>
+                    <div class="mt-4 text-center">
+                        <button type="button"
+                                onclick="if(confirm('Clear all saved form data? You will need to re-enter your information.')) { window.FormPersistence.clearAllFormData(); location.reload(); }"
+                                class="text-sm text-gray-500 hover:text-red-600 underline">
+                            Clear Saved Form Data
+                        </button>
+                    </div>
                 </div>
             {% else %}
                 <div class="bg-blue-50 border border-blue-200 rounded-lg shadow-lg p-8 text-center">
@@ -645,8 +663,17 @@ input:focus, select:focus, textarea:focus {
 }
 </style>
 
+<!-- Form State Persistence Script -->
+<script src="{% static 'calculator/js/form-persistence.js' %}"></script>
+
 <script>
 function switchTab(phase) {
+    // Clear any save success/error messages
+    const saveMessage = document.getElementById('save-message');
+    if (saveMessage) {
+        saveMessage.innerHTML = '';
+    }
+
     // Hide all tab contents with fade effect
     document.querySelectorAll('.tab-content').forEach(content => {
         content.style.opacity = '0';
@@ -742,6 +769,14 @@ function stripCommas(value) {
 
 // Keyboard navigation for tabs
 document.addEventListener('DOMContentLoaded', function() {
+    {% if loaded_scenario %}
+    // Clear localStorage when loading a saved scenario to prevent FormPersistence
+    // from overriding Django's initial form values
+    if (window.FormPersistence) {
+        window.FormPersistence.clearAllFormData();
+    }
+    {% endif %}
+
     // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
 
@@ -822,16 +857,67 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Capture all form data when saving scenario
 document.getElementById('save-scenario-form').addEventListener('htmx:configRequest', function(event) {
-    // Get all input, select, and textarea elements from all phase forms
-    const allInputs = document.querySelectorAll('#content-accumulation input, #content-accumulation select, ' +
-                                                 '#content-phased-retirement input, #content-phased-retirement select, ' +
-                                                 '#content-active-retirement input, #content-active-retirement select, ' +
-                                                 '#content-late-retirement input, #content-late-retirement select');
+    // Phase 1: Accumulation
+    const phase1Inputs = document.querySelectorAll('#content-accumulation input, #content-accumulation select');
+    phase1Inputs.forEach(input => {
+        if (input.name && input.value && input.id && input.id.indexOf('_phase') === -1) {
+            event.detail.parameters['phase1_' + input.name] = input.value;
+        }
+    });
 
-    // Add each input value to the request
-    allInputs.forEach(input => {
-        if (input.name && input.value) {
-            event.detail.parameters[input.name] = input.value;
+    // Phase 2: Phased Retirement - get values from OOB-swapped inputs
+    const phase2StartPortfolio = document.getElementById('id_starting_portfolio_phase2');
+    const phase2StartAge = document.getElementById('id_phase_start_age_phase2');
+    const phase2Inputs = document.querySelectorAll('#content-phased-retirement input, #content-phased-retirement select');
+
+    // Add starting portfolio from OOB swap if it exists
+    if (phase2StartPortfolio && phase2StartPortfolio.value) {
+        event.detail.parameters['phase2_starting_portfolio'] = phase2StartPortfolio.value;
+    }
+    if (phase2StartAge && phase2StartAge.value) {
+        event.detail.parameters['phase2_phase_start_age'] = phase2StartAge.value;
+    }
+
+    // Add other Phase 2 inputs (but skip the OOB-swapped ones we already added)
+    phase2Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase2' && input.id !== 'id_phase_start_age_phase2') {
+            event.detail.parameters['phase2_' + input.name] = input.value;
+        }
+    });
+
+    // Phase 3: Active Retirement - get values from OOB-swapped inputs
+    const phase3StartPortfolio = document.getElementById('id_starting_portfolio_phase3');
+    const phase3StartAge = document.getElementById('id_active_retirement_start_age_phase3');
+    const phase3Inputs = document.querySelectorAll('#content-active-retirement input, #content-active-retirement select');
+
+    if (phase3StartPortfolio && phase3StartPortfolio.value) {
+        event.detail.parameters['phase3_starting_portfolio'] = phase3StartPortfolio.value;
+    }
+    if (phase3StartAge && phase3StartAge.value) {
+        event.detail.parameters['phase3_active_retirement_start_age'] = phase3StartAge.value;
+    }
+
+    phase3Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase3' && input.id !== 'id_active_retirement_start_age_phase3') {
+            event.detail.parameters['phase3_' + input.name] = input.value;
+        }
+    });
+
+    // Phase 4: Late Retirement - get values from OOB-swapped inputs
+    const phase4StartPortfolio = document.getElementById('id_starting_portfolio_phase4');
+    const phase4StartAge = document.getElementById('id_late_retirement_start_age_phase4');
+    const phase4Inputs = document.querySelectorAll('#content-late-retirement input, #content-late-retirement select');
+
+    if (phase4StartPortfolio && phase4StartPortfolio.value) {
+        event.detail.parameters['phase4_starting_portfolio'] = phase4StartPortfolio.value;
+    }
+    if (phase4StartAge && phase4StartAge.value) {
+        event.detail.parameters['phase4_late_retirement_start_age'] = phase4StartAge.value;
+    }
+
+    phase4Inputs.forEach(input => {
+        if (input.name && input.value && input.id !== 'id_starting_portfolio_phase4' && input.id !== 'id_late_retirement_start_age_phase4') {
+            event.detail.parameters['phase4_' + input.name] = input.value;
         }
     });
 });

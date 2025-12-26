@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Retirement Planner{% endblock %}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="{% block description %}Plan your retirement across four life phases: accumulation, phased retirement, active retirement, and late retirement. Free retirement calculator with scenario comparison.{% endblock %}">
     <meta name="author" content="Retirement Planner">
@@ -51,7 +54,7 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
     <!-- Alpine.js for mobile menu -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Navigation Bar -->
@@ -143,6 +146,9 @@
                         <span class="block text-gray-600 px-3 py-2 text-base">
                             {{ user.username }}
                         </span>
+                        <a href="{% url 'calculator:profile' %}" class="block text-gray-700 hover:bg-blue-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
+                            Profile
+                        </a>
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
                             <button type="submit" class="block w-full text-left text-gray-700 hover:bg-red-50 hover:text-red-600 px-3 py-2 rounded-md text-base font-medium">
@@ -207,7 +213,7 @@
     {% endblock %}
 
     <!-- Plotly.js for Monte Carlo charts -->
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" crossorigin="anonymous" charset="utf-8"></script>
 
     <!-- Extra JS block for child templates -->
     {% block extra_js %}{% endblock %}

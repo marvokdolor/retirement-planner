@@ -28,8 +28,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-# Add debug toolbar URLs only in development
+# Add debug toolbar and browser reload URLs only in development
 if settings.DEBUG:
     urlpatterns += [
         path('__debug__/', include('debug_toolbar.urls')),
+        path('__reload__/', include('django_browser_reload.urls')),
     ]

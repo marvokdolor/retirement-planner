@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import Scenario
@@ -41,24 +41,24 @@ class RetirementCalculatorForm(forms.Form):
     current_savings = forms.DecimalField(
         label='Current Savings ($)',
         max_digits=12,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         widget=forms.NumberInput(attrs={
             'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
             'placeholder': 'e.g., 50000',
-            'step': '0.01'
+            'step': '1'
         })
     )
 
     monthly_contribution = forms.DecimalField(
         label='Monthly Contribution ($)',
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         min_value=0,
         widget=forms.NumberInput(attrs={
             'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
             'placeholder': 'e.g., 1000',
-            'step': '0.01'
+            'step': '1'
         })
     )
 
@@ -198,3 +198,52 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    """Form for updating user email (username read-only)."""
+
+    class Meta:
+        model = User
+        fields = ['email']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
+                'placeholder': 'your.email@example.com'
+            })
+        }
+        help_texts = {
+            'email': 'Optional. Used for password reset and scenario emails.'
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = False
+
+    def clean_email(self):
+        """Validate email is unique (excluding current user)."""
+        email = self.cleaned_data.get('email')
+        if email and self.user:
+            # Check if another user has this email
+            if User.objects.filter(email=email).exclude(pk=self.user.pk).exists():
+                raise forms.ValidationError('This email address is already in use.')
+        return email
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    """Custom password change form with Tailwind styling."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Style all password fields with Tailwind
+        for field_name in ['old_password', 'new_password1', 'new_password2']:
+            self.fields[field_name].widget.attrs.update({
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent'
+            })
+
+        # Update labels for clarity
+        self.fields['old_password'].label = 'Current Password'
+        self.fields['new_password1'].label = 'New Password'
+        self.fields['new_password2'].label = 'Confirm New Password'
